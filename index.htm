@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Trois pyramides par Zachary Tristan Luheshi</title>
+  
+  <link rel="stylesheet" type="text/css" href="StyleLabo10.css" /> 
+   
+  <script type="text/javascript" src="WebGl.js"></script>
+  <script type="text/javascript" src="ShaderCouleurs.js"></script>
+  <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
+  <script type="text/javascript" src="Transformations.js"></script>
+  <script type="text/javascript" src="Matrice.js"></script>
+  <script type="text/javascript" src="Camera.js"></script>
+  <script type="text/javascript" src="Scene.js"></script>
+  <script type="text/javascript" src="Joueur.js"></script>
+    
+ <script type="text/javascript">
+
+    var objgl = null;
+    var objProgShaders = null;
+    var objScene3D = null;
+    var joueur = null;
+    var angleCamera = 0; 
+    var touchesActives = {};
+   
+     function demarrer() {
+         var objCanvas = document.getElementById('monCanvas');
+         objgl = initWebGL(objCanvas);  // Initialise le contexte WebGL
+         objProgShaders = initShaders(objgl);
+         objScene3D = initScene3D(objgl);
+         joueur = initJoueur();
+
+         effacerCanevas(objgl);
+         dessiner();
+         animer(objgl, objProgShaders, objScene3D);
+     }
+
+    function animer(objgl, objProgShaders, objScene3D) {
+        // Un cycle d'animation	
+        // Requête pour le prochain cycle
+        objCycleAnimation = requestAnimationFrame(function() {
+            animer(objgl, objProgShaders, objScene3D);
+        });
+
+        // Le cycle d'animation
+        miseAJourPositionJoueur()
+        effacerCanevas(objgl);
+        dessiner();
+    }
+
+
+     function dessiner() {
+          // La vue
+          objgl.viewport(0, 0, objgl.drawingBufferWidth, objgl.drawingBufferHeight);
+
+          // Matrice de projection
+          var matProjection = mat4.create();
+          mat4.perspective(45, objgl.drawingBufferWidth / objgl.drawingBufferHeight, 0.01, 100, matProjection);
+          //mat4.perspective(45, 1, 0.01, 100, matProjection);
+          objgl.uniformMatrix4fv(objProgShaders.matProjection, false, matProjection);
+
+          for (var i = 0; i < objScene3D.tabObjets3D.length; i++) {
+              var vertex = objScene3D.tabObjets3D[i].vertex;
+              var couleurs = objScene3D.tabObjets3D[i].couleurs;
+              var maillage = objScene3D.tabObjets3D[i].maillage;
+              var transformations = objScene3D.tabObjets3D[i].transformations;
+
+              // Matrice du modèle            
+              var matModeleVue = mat4.create();
+              mat4.identity(matModeleVue); 
+              mat4.lookAt(getPositionsCameraXYZ(joueur),  
+                getCiblesCameraXYZ(joueur), 
+                getOrientationsXYZ(joueur),    
+                matModeleVue);
+              // Appliquer les transformations sur le modèle 
+              mat4.translate(matModeleVue, getPositionsXYZ(transformations));
+              mat4.scale(matModeleVue, getEchellesXYZ(transformations));
+              mat4.rotateX(matModeleVue, getAngleX(transformations) * Math.PI / 180);
+              mat4.rotateY(matModeleVue, getAngleY(transformations) * Math.PI / 180);
+              mat4.rotateZ(matModeleVue, getAngleZ(transformations) * Math.PI / 180);
+
+              // Relier la matrice aux shaders
+              objgl.uniformMatrix4fv(objProgShaders.matModeleVue, false, matModeleVue);
+
+              if (maillage == null)
+                  // Dessiner les sous-objets
+                  for (var j = 0; j < vertex.length; j++) {
+
+                      // Relier les vertex aux shaders
+                      objgl.bindBuffer(objgl.ARRAY_BUFFER, vertex[j]);
+                      objgl.vertexAttribPointer(objProgShaders.posVertex, 3, objgl.FLOAT, false, 0, 0);
+                      var intNbVertex = (objgl.getBufferParameter(objgl.ARRAY_BUFFER, objgl.BUFFER_SIZE) / 4) / 3;
+
+                      // Relier les couleurs aux shaders
+                      objgl.bindBuffer(objgl.ARRAY_BUFFER, couleurs[j]);
+                      objgl.vertexAttribPointer(objProgShaders.couleurVertex, 4, objgl.FLOAT, false, 0, 0);
+
+                      // Dessiner
+                      objgl.drawArrays(vertex[j].typeDessin, 0, intNbVertex);
+                  }
+              else { // Dessiner le maillage
+                  // Relier les vertex aux shaders
+                  objgl.bindBuffer(objgl.ARRAY_BUFFER, vertex);
+                  objgl.vertexAttribPointer(objProgShaders.posVertex, 3, objgl.FLOAT, false, 0, 0);
+
+                  // Relier les couleurs aux shaders
+                  objgl.bindBuffer(objgl.ARRAY_BUFFER, couleurs);
+                  objgl.vertexAttribPointer(objProgShaders.couleurVertex, 4, objgl.FLOAT, false, 0, 0)
+
+                  // Sélectionner le maillage qu'on va utiliser pour les triangles et les droites
+                  objgl.bindBuffer(objgl.ELEMENT_ARRAY_BUFFER, maillage);
+
+                  // Dessiner les triangles
+                  objgl.drawElements(objgl.TRIANGLES, maillage.intNbTriangles * 3, objgl.UNSIGNED_SHORT, 0);
+                  // Dessiner les droites à la suite des triangles
+                  objgl.drawElements(objgl.LINES, maillage.intNbDroites * 2, objgl.UNSIGNED_SHORT, maillage.intNbTriangles * 2 * 3);
+              }
+          }
+     }
+
+
+     function effacerCanevas(objgl) {
+         // Met la couleur d'effacement au noir et complétement opaque
+         objgl.clearColor(0.0, 0.0, 0.0, 1.0);
+         // Efface les couleurs et le buffer de profondeur.
+         objgl.clear(objgl.COLOR_BUFFER_BIT | objgl.DEPTH_BUFFER_BIT);
+     }
+
+
+
+</script>
+</head>
+
+<body onload="demarrer()" onkeydown="enfoncerTouche(event); return false" onkeyup="relacherTouche(event); return false"> 
+   <header class="sTexteCentre sLargeurDiv sEntete">
+        <p> 
+            <span class="sTitreApp">
+                Trois pyramides<br />
+            </span> par 
+            <span class="sAuteurApp">
+                Zachary Tristan Luheshi
+            </span> 
+       </p>
+    </header>
+
+    <main class="sLargeurDiv sCorps">	
+	   <canvas id="monCanvas" width="640" height="480" >
+		    Votre navigateur ne supporte pas la balise canvas
+	    </canvas>
+    </main>
+
+</body>
+</html>
