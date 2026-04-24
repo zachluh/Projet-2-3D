@@ -84,6 +84,6 @@ function miseAJourPositionJoueur() {
     setCibleCameraX(posX + Math.sin(angleCamera), joueur);
     setCibleCameraZ(posZ + Math.cos(angleCamera), joueur);
 
-    // console.log("Position de la caméra : " + getPositionsCameraXYZ(joueur));
-    // console.log("Angle : " + angleCamera);
+    console.log("Position de la caméra : " + getPositionsCameraXYZ(joueur));
+    console.log("Angle : " + angleCamera);
 }
