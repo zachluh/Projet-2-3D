@@ -15,32 +15,19 @@ function choisirPositionTresor() {
 }
 
 //yes i vibe coded the treasure sowwy (remove when remise)
+// Hardcoded treasure chest vertexes (no variables!)
 function creerVertexTresor(objgl) {
-    var bw = 0.35, bd = 0.35, bh = 0.30; // body half-extents & height
-    var lw = 0.37, ld = 0.37, lh = 0.15; // lid (slightly wider)
-    var ly = bh;                           // lid bottom = body top
-
     var tabVertex = [
-        // Body front
-        [ 0.0, bh/2, bd,   bw, bh, bd,  -bw, bh, bd,  -bw, 0, bd,   bw, 0, bd,   bw, bh, bd  ],
-        // Body back
-        [ 0.0, bh/2,-bd,   bw, bh,-bd,  -bw, bh,-bd,  -bw, 0,-bd,   bw, 0,-bd,   bw, bh,-bd  ],
-        // Body right
-        [ bw, bh/2, 0,     bw, bh, bd,   bw, bh,-bd,   bw, 0,-bd,   bw, 0, bd,   bw, bh, bd  ],
-        // Body left
-        [-bw, bh/2, 0,    -bw, bh, bd,  -bw, bh,-bd,  -bw, 0,-bd,  -bw, 0, bd,  -bw, bh, bd  ],
-        // Body top (gold seam)
-        [ 0, bh, 0,        bw, bh, bd,  -bw, bh, bd,  -bw, bh,-bd,  bw, bh,-bd,  bw, bh, bd  ],
-        // Lid front
-        [ 0.0, ly+lh/2, ld,   lw, ly+lh, ld,  -lw, ly+lh, ld,  -lw, ly, ld,   lw, ly, ld,   lw, ly+lh, ld  ],
-        // Lid back
-        [ 0.0, ly+lh/2,-ld,   lw, ly+lh,-ld,  -lw, ly+lh,-ld,  -lw, ly,-ld,   lw, ly,-ld,   lw, ly+lh,-ld  ],
-        // Lid right
-        [ lw, ly+lh/2, 0,     lw, ly+lh, ld,   lw, ly+lh,-ld,   lw, ly,-ld,   lw, ly, ld,   lw, ly+lh, ld  ],
-        // Lid left
-        [-lw, ly+lh/2, 0,    -lw, ly+lh, ld,  -lw, ly+lh,-ld,  -lw, ly,-ld,  -lw, ly, ld,  -lw, ly+lh, ld  ],
-        // Lid top
-        [ 0, ly+lh, 0,        lw, ly+lh, ld,  -lw, ly+lh, ld,  -lw, ly+lh,-ld,  lw, ly+lh,-ld,  lw, ly+lh, ld ]
+        [ 0.0,   0.15,  0.35,   0.35,  0.3,  0.35,  -0.35,  0.3,  0.35,  -0.35, 0.0,  0.35,   0.35, 0.0,  0.35,   0.35,  0.3,  0.35 ],
+        [ 0.0,   0.15, -0.35,   0.35,  0.3, -0.35,  -0.35,  0.3, -0.35,  -0.35, 0.0, -0.35,   0.35, 0.0, -0.35,   0.35,  0.3, -0.35 ],
+        [ 0.35,  0.15,  0.0,    0.35,  0.3,  0.35,   0.35,  0.3, -0.35,   0.35, 0.0, -0.35,   0.35, 0.0,  0.35,   0.35,  0.3,  0.35 ],
+        [-0.35,  0.15,  0.0,   -0.35,  0.3,  0.35,  -0.35,  0.3, -0.35,  -0.35, 0.0, -0.35,  -0.35, 0.0,  0.35,  -0.35,  0.3,  0.35 ],
+        [ 0.0,   0.3,   0.0,    0.35,  0.3,  0.35,  -0.35,  0.3,  0.35,  -0.35, 0.3, -0.35,   0.35, 0.3, -0.35,   0.35,  0.3,  0.35 ],
+        [ 0.0,   0.375, 0.37,   0.37,  0.45, 0.37,  -0.37,  0.45, 0.37,  -0.37, 0.3,  0.37,   0.37, 0.3,  0.37,   0.37,  0.45, 0.37 ],
+        [ 0.0,   0.375,-0.37,   0.37,  0.45,-0.37,  -0.37,  0.45,-0.37,  -0.37, 0.3, -0.37,   0.37, 0.3, -0.37,   0.37,  0.45,-0.37 ],
+        [ 0.37,  0.375, 0.0,    0.37,  0.45, 0.37,   0.37,  0.45,-0.37,   0.37, 0.3, -0.37,   0.37, 0.3,  0.37,   0.37,  0.45, 0.37 ],
+        [-0.37,  0.375, 0.0,   -0.37,  0.45, 0.37,  -0.37,  0.45,-0.37,  -0.37, 0.3, -0.37,  -0.37, 0.3,  0.37,  -0.37,  0.45, 0.37 ],
+        [ 0.0,   0.45,  0.0,    0.37,  0.45, 0.37,  -0.37,  0.45, 0.37,  -0.37, 0.45,-0.37,   0.37, 0.45,-0.37,   0.37,  0.45, 0.37 ]
     ];
 
     var tabObjTresor = [];

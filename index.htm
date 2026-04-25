@@ -16,8 +16,9 @@
   <script type="text/javascript" src="Scene.js"></script>
   <script type="text/javascript" src="Joueur.js"></script>
   <script type="text/javascript" src="Tresor.js"></script>
+  <script type="text/javascript" src="Jeu.js"></script>
 
-    
+
  <script type="text/javascript">
 
     var objgl = null;
@@ -37,6 +38,7 @@
 
          effacerCanevas(objgl);
          dessiner();
+         demarrerJeu();
          animer(objgl, objProgShaders, objScene3D);
      }
 
@@ -48,7 +50,8 @@
         });
 
         // Le cycle d'animation
-        miseAJourPositionJoueur()
+        mettreAJourJeu();
+        if (jeuActif) miseAJourPositionJoueur();
         verifierCollisionTresor();
         effacerCanevas(objgl);
         dessiner();
