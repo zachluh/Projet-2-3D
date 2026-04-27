@@ -1,0 +1,11 @@
+Model Information:
+* title:	Spawn
+* source:	https://sketchfab.com/3d-models/spawn-f32313a638d349618551a2c717687f3d
+* author:	Luke Steel (https://sketchfab.com/luke.steel)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Spawn" (https://sketchfab.com/3d-models/spawn-f32313a638d349618551a2c717687f3d) by Luke Steel (https://sketchfab.com/luke.steel) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -8,15 +8,18 @@
   <link rel="stylesheet" type="text/css" href="StyleLabo10.css" /> 
    
   <script type="text/javascript" src="WebGl.js"></script>
-  <script type="text/javascript" src="ShaderCouleurs.js"></script>
+  <script type="text/javascript" src="ShaderCouleursTextures.js"></script>
   <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
   <script type="text/javascript" src="Transformations.js"></script>
+  <script type="text/javascript" src="Utils.js"></script>
   <script type="text/javascript" src="Matrice.js"></script>
   <script type="text/javascript" src="Camera.js"></script>
-  <script type="text/javascript" src="Scene.js"></script>
+  <script type="module" src="Scene.js"></script>
   <script type="text/javascript" src="Joueur.js"></script>
   <script type="text/javascript" src="Tresor.js"></script>
   <script type="text/javascript" src="Jeu.js"></script>
+  <script type="module" src="Fleches.js"></script>
+  <script type="module" src="Teleporteurs.js"></script>
 
 
  <script type="text/javascript">
@@ -25,16 +28,16 @@
     var objProgShaders = null;
     var objScene3D = null;
     var joueur = null;
-    var angleCamera = 0; 
+    var angleCamera = -Math.PI / 2; 
     var touchesActives = {};
    
-     function demarrer() {
+     async function demarrer() {
          var objCanvas = document.getElementById('monCanvas');
          objgl = initWebGL(objCanvas);  // Initialise le contexte WebGL
          objProgShaders = initShaders(objgl);
-         objScene3D = initScene3D(objgl);
+         initMatrice();
+         objScene3D = await initScene3D(objgl);
          joueur = initJoueur();
-         initTresor(objgl);
 
          effacerCanevas(objgl);
          dessiner();
@@ -53,6 +56,7 @@
         mettreAJourJeu();
         if (jeuActif) miseAJourPositionJoueur();
         verifierCollisionTresor();
+        verifierCollisionTransporteur();
         effacerCanevas(objgl);
         dessiner();
     }
@@ -68,64 +72,98 @@
           //mat4.perspective(45, 1, 0.01, 100, matProjection);
           objgl.uniformMatrix4fv(objProgShaders.matProjection, false, matProjection);
 
+          // Matrice de vue calculée une seule fois par frame
+          var matVue = mat4.create();
+          mat4.identity(matVue);
+          mat4.lookAt(getPositionsCameraXYZ(joueur),
+            getCiblesCameraXYZ(joueur),
+            getOrientationsXYZ(joueur),
+            matVue);
+          var matModeleVue = mat4.create();
+
           for (var i = 0; i < objScene3D.tabObjets3D.length; i++) {
               var vertex = objScene3D.tabObjets3D[i].vertex;
               var couleurs = objScene3D.tabObjets3D[i].couleurs;
               var maillage = objScene3D.tabObjets3D[i].maillage;
-              var transformations = objScene3D.tabObjets3D[i].transformations;
+              var texture = objScene3D.tabObjets3D[i].texture;
+              var uv = objScene3D.tabObjets3D[i].uv;
+              var estTexturee = objScene3D.tabObjets3D[i].estTexturee;
+              var estInversee = objScene3D.tabObjets3D[i].estInversee;
 
-              // Matrice du modèle            
-              var matModeleVue = mat4.create();
-              mat4.identity(matModeleVue); 
-              mat4.lookAt(getPositionsCameraXYZ(joueur),  
-                getCiblesCameraXYZ(joueur), 
-                getOrientationsXYZ(joueur),    
-                matModeleVue);
-              // Appliquer les transformations sur le modèle 
-              mat4.translate(matModeleVue, getPositionsXYZ(transformations));
-              mat4.scale(matModeleVue, getEchellesXYZ(transformations));
-              mat4.rotateX(matModeleVue, getAngleX(transformations) * Math.PI / 180);
-              mat4.rotateY(matModeleVue, getAngleY(transformations) * Math.PI / 180);
-              mat4.rotateZ(matModeleVue, getAngleZ(transformations) * Math.PI / 180);
+              // Multiplier la vue par la matrice modèle précalculée
+              mat4.multiply(matVue, objScene3D.tabObjets3D[i].matModele, matModeleVue);
 
               // Relier la matrice aux shaders
               objgl.uniformMatrix4fv(objProgShaders.matModeleVue, false, matModeleVue);
 
-              if (maillage == null)
-                  // Dessiner les sous-objets
-                  for (var j = 0; j < vertex.length; j++) {
-
-                      // Relier les vertex aux shaders
-                      objgl.bindBuffer(objgl.ARRAY_BUFFER, vertex[j]);
-                      objgl.vertexAttribPointer(objProgShaders.posVertex, 3, objgl.FLOAT, false, 0, 0);
-                      var intNbVertex = (objgl.getBufferParameter(objgl.ARRAY_BUFFER, objgl.BUFFER_SIZE) / 4) / 3;
-
-                      // Relier les couleurs aux shaders
-                      objgl.bindBuffer(objgl.ARRAY_BUFFER, couleurs[j]);
-                      objgl.vertexAttribPointer(objProgShaders.couleurVertex, 4, objgl.FLOAT, false, 0, 0);
-
-                      // Dessiner
-                      objgl.drawArrays(vertex[j].typeDessin, 0, intNbVertex);
-                  }
-              else { // Dessiner le maillage
+              if (estTexturee) {
                   // Relier les vertex aux shaders
                   objgl.bindBuffer(objgl.ARRAY_BUFFER, vertex);
                   objgl.vertexAttribPointer(objProgShaders.posVertex, 3, objgl.FLOAT, false, 0, 0);
 
-                  // Relier les couleurs aux shaders
-                  objgl.bindBuffer(objgl.ARRAY_BUFFER, couleurs);
-                  objgl.vertexAttribPointer(objProgShaders.couleurVertex, 4, objgl.FLOAT, false, 0, 0)
+                  // Désactiver couleurVertex (pas de tampon de couleurs pour les objets texturés)
+                  objgl.disableVertexAttribArray(objProgShaders.couleurVertex);
 
-                  // Sélectionner le maillage qu'on va utiliser pour les triangles et les droites
+                  // Activer et relier les coordonnées UV
+                  objgl.enableVertexAttribArray(objProgShaders.posTexel);
+                  objgl.bindBuffer(objgl.ARRAY_BUFFER, uv);
+                  objgl.vertexAttribPointer(objProgShaders.posTexel, 2, objgl.FLOAT, false, 0, 0);
+
+                  // Relier la texture aux shaders
+                  objgl.activeTexture(objgl.TEXTURE0);
+                  objgl.bindTexture(objgl.TEXTURE_2D, texture);
+                  objgl.uniform1i(objProgShaders.noTexture, 0);
+                  objgl.uniform1f(objProgShaders.pcCouleurTexel, 1.0);
+                  objgl.uniform1f(objProgShaders.inverserCouleurs, estInversee ? 1.0 : 0.0);
+
+                  // Dessiner avec le tampon d'indices
                   objgl.bindBuffer(objgl.ELEMENT_ARRAY_BUFFER, maillage);
-
-                  // Dessiner les triangles
                   objgl.drawElements(objgl.TRIANGLES, maillage.intNbTriangles * 3, objgl.UNSIGNED_SHORT, 0);
-                  // Dessiner les droites à la suite des triangles
-                  objgl.drawElements(objgl.LINES, maillage.intNbDroites * 2, objgl.UNSIGNED_SHORT, maillage.intNbTriangles * 2 * 3);
+
+                  // Restaurer l'état pour les objets non texturés
+                  objgl.disableVertexAttribArray(objProgShaders.posTexel);
+                  objgl.enableVertexAttribArray(objProgShaders.couleurVertex);
+                  objgl.uniform1f(objProgShaders.pcCouleurTexel, 0.0);
+                  objgl.uniform1f(objProgShaders.inverserCouleurs, 0.0);
               }
+
+              else {
+                if (maillage == null)
+                    // Dessiner les sous-objets
+                    for (var j = 0; j < vertex.length; j++) {
+
+                        // Relier les vertex aux shaders
+                        objgl.bindBuffer(objgl.ARRAY_BUFFER, vertex[j]);
+                        objgl.vertexAttribPointer(objProgShaders.posVertex, 3, objgl.FLOAT, false, 0, 0);
+                        var intNbVertex = (objgl.getBufferParameter(objgl.ARRAY_BUFFER, objgl.BUFFER_SIZE) / 4) / 3;
+
+                        // Relier les couleurs aux shaders
+                        objgl.bindBuffer(objgl.ARRAY_BUFFER, couleurs[j]);
+                        objgl.vertexAttribPointer(objProgShaders.couleurVertex, 4, objgl.FLOAT, false, 0, 0);
+
+                        // Dessiner
+                        objgl.drawArrays(vertex[j].typeDessin, 0, intNbVertex);
+                    }
+                else { // Dessiner le maillage
+                    // Relier les vertex aux shaders
+                    objgl.bindBuffer(objgl.ARRAY_BUFFER, vertex);
+                    objgl.vertexAttribPointer(objProgShaders.posVertex, 3, objgl.FLOAT, false, 0, 0);
+
+                    // Relier les couleurs aux shaders
+                    objgl.bindBuffer(objgl.ARRAY_BUFFER, couleurs);
+                    objgl.vertexAttribPointer(objProgShaders.couleurVertex, 4, objgl.FLOAT, false, 0, 0)
+
+                    // Sélectionner le maillage qu'on va utiliser pour les triangles et les droites
+                    objgl.bindBuffer(objgl.ELEMENT_ARRAY_BUFFER, maillage);
+
+                    // Dessiner les triangles
+                    objgl.drawElements(objgl.TRIANGLES, maillage.intNbTriangles * 3, objgl.UNSIGNED_SHORT, 0);
+                    // Dessiner les droites à la suite des triangles
+                    objgl.drawElements(objgl.LINES, maillage.intNbDroites * 2, objgl.UNSIGNED_SHORT, maillage.intNbTriangles * 2 * 3);
+                }
+              }
+
           }
-          dessinerTresor(objgl, objProgShaders);
      }
 
 
@@ -154,7 +192,7 @@
     </header>
 
     <main class="sLargeurDiv sCorps">	
-	   <canvas id="monCanvas" width="640" height="480" >
+	   <canvas id="monCanvas" width="1080" height="720" >
 		    Votre navigateur ne supporte pas la balise canvas
 	    </canvas>
     </main>

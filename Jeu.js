@@ -38,10 +38,11 @@ function passerNiveauSuivant() {
     niveau++;
     console.log("=== Passage au suivant " + '... ===');
 
-    setTimeout(function() {
+    setTimeout(async function() {
+        initMatrice();
         joueur = initJoueur();
-        angleCamera = 0;
-        initTresor(objgl);
+        angleCamera = -Math.PI / 2;
+        objScene3D = await initScene3D(objgl);
         tempsDebut = Date.now();
         derniereSecondeLoggee = -1;
         timerActif = true;

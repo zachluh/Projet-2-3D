@@ -1,4 +1,10 @@
-function initScene3D(objgl) {
+
+
+
+
+
+
+async function initScene3D(objgl) {
     var objScene3D = new Object();
     var tabObjets3D = new Array();
 
@@ -9,13 +15,78 @@ function initScene3D(objgl) {
             objet3D.couleurs = creerCouleurs(objgl, matrice[i][j]);
             objet3D.maillage = null;
             objet3D.transformations = creerTransformations();
-            var y = matrice[i][j] == 0 || matrice[i][j] == 3 ? 0 : 1; 
+            var y = matrice[i][j] == 1 || matrice[i][j] == 2 ? 1 : 0; 
             setPositionsXYZ([i, y, j], objet3D.transformations);
+            objet3D.matModele = mat4.create();
+            mat4.identity(objet3D.matModele);
+            mat4.translate(objet3D.matModele, getPositionsXYZ(objet3D.transformations));
             tabObjets3D.push(objet3D);
         }
     }
+    
+    // Initialiser le trésor
+    initTresor(objgl);
+    tabObjets3D.push(tresorObj);
 
-    // La pyramide de gauche
+    // Initialiser les flèches
+    let fleches = await initFleches();
+
+    for (let i = 0; i < fleches.length; i++) {
+        let objet3D = creerFleche(objgl, fleches[i].positions, fleches[i].indices);
+        let position = trouveCaseVide(matrice, 4);
+        console.log("Position de la flèche " + i + ": " + position);
+        setPositionsXYZ([position[0], 1.2, position[1]], objet3D.transformations);
+        if (i === 0) {
+            setPositionsXYZ([12, 1.2, 15], objet3D.transformations);
+        }
+        setEchellesXYZ([0.2, 0.2, 0.2], objet3D.transformations); // Positionner la flèche au centre de la scène
+        orienterFlecheVersPoint(objet3D);
+        objet3D.matModele = mat4.create();
+        mat4.identity(objet3D.matModele);
+        mat4.translate(objet3D.matModele, getPositionsXYZ(objet3D.transformations));
+        mat4.scale(objet3D.matModele, getEchellesXYZ(objet3D.transformations));
+        mat4.rotateY(objet3D.matModele, getAngleY(objet3D.transformations) * Math.PI / 180);
+        tabObjets3D.push(objet3D);
+    };
+    
+
+    let teleporteurs = await initTeleporteurs();
+    for (let i = 0; i < teleporteurs.length; i++) {
+        if (i < teleporteurs.length / 2) {
+            let transporteur = creerTeleporter(objgl, teleporteurs[i].positions, teleporteurs[i].texCoords, teleporteurs[i].indices, 'modeles/teleporteur/textures/Spawnlocation2Mtl_baseColor.png');
+            let positionTransporteur = trouveCaseVide(matrice, 6);
+            setPositionsXYZ([positionTransporteur[0], -1.5, positionTransporteur[1]], transporteur.transformations);
+            setEchellesXYZ([0.2, 0.2, 0.2], transporteur.transformations);
+            setAngleX(0, transporteur.transformations);
+
+            transporteur.matModele = mat4.create();
+            mat4.identity(transporteur.matModele);
+            mat4.translate(transporteur.matModele, getPositionsXYZ(transporteur.transformations));
+            mat4.scale(transporteur.matModele, getEchellesXYZ(transporteur.transformations));
+            mat4.rotateX(transporteur.matModele, getAngleX(transporteur.transformations) * Math.PI / 180);
+            tabObjets3D.push(transporteur);
+        }
+
+        else {
+            let positionRecepteur = trouveCaseVide(matrice, 7);
+            let recepteur = creerTeleporter(objgl, teleporteurs[i].positions, teleporteurs[i].texCoords, teleporteurs[i].indices, 'modeles/teleporteur/textures/Spawnlocation2Mtl_baseColor.png');
+            setPositionsXYZ([positionRecepteur[0], -1.5, positionRecepteur[1]], recepteur.transformations);
+            setEchellesXYZ([0.2, 0.2, 0.2], recepteur.transformations);
+            setAngleX(0, recepteur.transformations);
+            recepteur.estInversee = true;
+
+            recepteur.matModele = mat4.create();
+            mat4.identity(recepteur.matModele);
+            mat4.translate(recepteur.matModele, getPositionsXYZ(recepteur.transformations));
+            mat4.scale(recepteur.matModele, getEchellesXYZ(recepteur.transformations));
+            mat4.rotateX(recepteur.matModele, getAngleX(recepteur.transformations) * Math.PI / 180);
+
+            positionsRecepteurs.push(positionRecepteur);
+            tabObjets3D.push(recepteur);
+        }
+    }
+
+
 
     // Mettre les objets 3D sur la scène
     objScene3D.tabObjets3D = tabObjets3D;
@@ -126,25 +197,25 @@ function creerCouleurs(objgl, type) {
     var tabCouleurs = new Array();
     var couleur = [0.0, 0.0, 0.0, 1.0];
 
-    console.log("Type: " + type);
 
     switch (type) {
+    case 0:
+        couleur = [1.0, 1.0, 1.0, 1.0]; // Blanc
+        break;
     case 1: // Couleurs face avant pleine
-        couleur = [1.0, 0.0, 0.0, 1.0]; // Rouge
+        couleur = [1.0, 1.0, 1.0, 1.0]; // Blanc
         break;
     case 2: 
-        couleur = [0.0, 1.0, 0.0, 1.0]; // Vert
+        couleur = [1.0, 1.0, 1.0, 1.0]; // Noir
         break;
     case 3: 
-        couleur = [0.0, 0.0, 1.0, 1.0]; // Bleu
+        couleur = [1.0, 0.0, 0.0, 1.0]; // Red
         break;
     default:
-        couleur = [0.0, 0.0, 0.0, 1.0]; // Noir
+        couleur = [1.0, 1.0, 1.0, 1.0]; // Noir
         break;
             
     }
-
-    console.log("Couleur: " + couleur);
 
     tabCouleurs[0] = []; // Blanc 
     for (var i = 0; i < 6; i++)
@@ -178,7 +249,7 @@ function creerCouleurs(objgl, type) {
     // Couleurs contour avant
     tabCouleurs[6] = [];
     for (var i = 0; i < 4; i++)
-        tabCouleurs[6] = tabCouleurs[6].concat(couleur); // Blanc
+        tabCouleurs[6] = tabCouleurs[6].concat([0.0, 0.0, 0.0, 1.0]); // Noir
 
     // Couleurs contour arrière
     tabCouleurs[7] = tabCouleurs[6];
@@ -196,3 +267,5 @@ function creerCouleurs(objgl, type) {
     }
     return tabObjCouleursCube;
 }
+
+window.initScene3D = initScene3D;

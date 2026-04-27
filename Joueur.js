@@ -1,7 +1,7 @@
 function initJoueur() {
         var joueur = creerCamera();
         setPositionsCameraXYZ([15, 1, 15], joueur);
-        setCiblesCameraXYZ([0, 1, 16], joueur);
+        setCiblesCameraXYZ([12, 1, 15], joueur);
         setOrientationsXYZ([0, 1, 0], joueur);
         joueur.vitesse = 0.5;
         joueur.vitesseRotation = 0.1; 
@@ -46,6 +46,17 @@ function murDerriere() {
     return matrice[nextX][nextZ] === 1 || matrice[nextX][nextZ] === 2;
 }
 
+function verifierCollisionTransporteur() {
+    var pos = getPositionJoueurDansMatrice();
+    if (matrice[pos[0]][pos[1]] === 6) {
+        var posRecepteur = positionsRecepteurs[Math.floor(Math.random() * positionsRecepteurs.length)];
+        setPositionCameraX(posRecepteur[0], joueur);
+        setPositionCameraZ(posRecepteur[1], joueur);
+        setCibleCameraX(posRecepteur[0] + Math.sin(angleCamera), joueur);
+        setCibleCameraZ(posRecepteur[1] + Math.cos(angleCamera), joueur);
+    }
+}
+
 
     
 function miseAJourPositionJoueur() {
@@ -84,6 +95,6 @@ function miseAJourPositionJoueur() {
     setCibleCameraX(posX + Math.sin(angleCamera), joueur);
     setCibleCameraZ(posZ + Math.cos(angleCamera), joueur);
 
-    console.log("Position de la caméra : " + getPositionsCameraXYZ(joueur));
-    console.log("Angle : " + angleCamera);
+    //console.log("Position de la caméra : " + getPositionsCameraXYZ(joueur));
+    //console.log("Angle : " + angleCamera);
 }
