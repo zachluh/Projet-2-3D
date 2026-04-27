@@ -15,7 +15,10 @@
   <script type="text/javascript" src="Camera.js"></script>
   <script type="text/javascript" src="Scene.js"></script>
   <script type="text/javascript" src="Joueur.js"></script>
-    
+  <script type="text/javascript" src="Tresor.js"></script>
+  <script type="text/javascript" src="Jeu.js"></script>
+
+
  <script type="text/javascript">
 
     var objgl = null;
@@ -31,9 +34,11 @@
          objProgShaders = initShaders(objgl);
          objScene3D = initScene3D(objgl);
          joueur = initJoueur();
+         initTresor(objgl);
 
          effacerCanevas(objgl);
          dessiner();
+         demarrerJeu();
          animer(objgl, objProgShaders, objScene3D);
      }
 
@@ -45,7 +50,9 @@
         });
 
         // Le cycle d'animation
-        miseAJourPositionJoueur()
+        mettreAJourJeu();
+        if (jeuActif) miseAJourPositionJoueur();
+        verifierCollisionTresor();
         effacerCanevas(objgl);
         dessiner();
     }
@@ -118,6 +125,7 @@
                   objgl.drawElements(objgl.LINES, maillage.intNbDroites * 2, objgl.UNSIGNED_SHORT, maillage.intNbTriangles * 2 * 3);
               }
           }
+          dessinerTresor(objgl, objProgShaders);
      }
 
 
