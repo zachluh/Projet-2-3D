@@ -1,5 +1,4 @@
 var positionTresor = null;
-var tresorObj = null;
 var tresorCollecte = false;
 
 function choisirPositionTresor() {
@@ -11,7 +10,7 @@ function choisirPositionTresor() {
     //     }
     // }
     // return corridors[Math.floor(Math.random() * corridors.length)];
-    return [12, 15]; // hard coded for test
+    return [12, 16]; // hard coded for test
 }
 
 //yes i vibe coded the treasure sowwy (remove when remise)
@@ -62,7 +61,8 @@ function creerCouleursTresor(objgl) {
 }
 
 function initTresor(objgl) {
-    positionTresor = choisirPositionTresor();
+    positionTresor = trouveCaseVide(matrice, 5);
+    console.log("Position du trésor : " + positionTresor); 
     tresorCollecte = false;
 
     tresorObj = new Object();
@@ -71,32 +71,13 @@ function initTresor(objgl) {
     tresorObj.transformations = creerTransformations();
     tresorObj.binVisible    = true;
 
+    
+
     setPositionsXYZ([positionTresor[0], 0.5, positionTresor[1]], tresorObj.transformations);
-}
 
-function dessinerTresor(objgl, objProgShaders) {
-    if (!tresorObj || !tresorObj.binVisible) return;
-
-    var trans = tresorObj.transformations;
-    var matModeleVue = mat4.create();
-    mat4.identity(matModeleVue);
-    mat4.lookAt(getPositionsCameraXYZ(joueur),
-                getCiblesCameraXYZ(joueur),
-                getOrientationsXYZ(joueur),
-                matModeleVue);
-    mat4.translate(matModeleVue, getPositionsXYZ(trans));
-
-    objgl.uniformMatrix4fv(objProgShaders.matModeleVue, false, matModeleVue);
-
-    for (var i = 0; i < tresorObj.vertex.length; i++) {
-        objgl.bindBuffer(objgl.ARRAY_BUFFER, tresorObj.vertex[i]);
-        objgl.vertexAttribPointer(objProgShaders.posVertex, 3, objgl.FLOAT, false, 0, 0);
-
-        objgl.bindBuffer(objgl.ARRAY_BUFFER, tresorObj.couleurs[i]);
-        objgl.vertexAttribPointer(objProgShaders.couleurVertex, 4, objgl.FLOAT, false, 0, 0);
-
-        objgl.drawArrays(tresorObj.vertex[i].typeDessin, 0, tresorObj.vertex[i].nbVertex);
-    }
+    tresorObj.matModele = mat4.create();
+    mat4.identity(tresorObj.matModele);
+    mat4.translate(tresorObj.matModele, getPositionsXYZ(tresorObj.transformations));
 }
 
 
