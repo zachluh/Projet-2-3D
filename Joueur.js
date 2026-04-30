@@ -1,3 +1,7 @@
+var vueTopDown = false;
+var cameraAvantTopDown = null;
+var angleCameraAvantTopDown = 0;
+
 function initJoueur() {
         var joueur = creerCamera();
         setPositionsCameraXYZ([15, 1, 15], joueur);
@@ -11,6 +15,39 @@ function initJoueur() {
 function enfoncerTouche(event) {
     if (!event) return;
     event.preventDefault();
+
+    // Page Up — entrer en vue de dessus
+    if (event.keyCode === 33 || event.keyCode === 187) {
+        if (!vueTopDown) {
+            if (!activerVueAerienne()) return; // score < 10, vue aérienne refusée
+            vueTopDown = true;
+            cameraAvantTopDown = joueur.slice();
+            angleCameraAvantTopDown = angleCamera;
+            setPositionsCameraXYZ([15, 40, 15], joueur);
+            setCiblesCameraXYZ([15, 0, 15], joueur);
+            setOrientationsXYZ([0, 0, -1], joueur);
+        }
+        return;
+    }
+
+    // Page Down — quitter la vue de dessus
+    if (event.keyCode === 34 || event.keyCode === 189) {
+        if (vueTopDown) {
+            vueTopDown = false;
+            desactiverVueAerienne();
+            joueur.splice(0, 9,
+                cameraAvantTopDown[0], cameraAvantTopDown[1], cameraAvantTopDown[2],
+                cameraAvantTopDown[3], cameraAvantTopDown[4], cameraAvantTopDown[5],
+                cameraAvantTopDown[6], cameraAvantTopDown[7], cameraAvantTopDown[8]);
+            angleCamera = angleCameraAvantTopDown;
+        }
+        return;
+    }
+
+    // Espace — ouvrir le mur devant le joueur
+    if (event.keyCode === 32) {
+        utiliserOuvreur()
+    }
 
     touchesActives[event.keyCode] = true;
 
@@ -60,6 +97,8 @@ function verifierCollisionTransporteur() {
 
     
 function miseAJourPositionJoueur() {
+    if (vueTopDown) return;
+
     var vitesse = joueur.vitesse;
     var vitesseRotation = joueur.vitesseRotation;
     camera = objScene3D.camera;
@@ -97,4 +136,6 @@ function miseAJourPositionJoueur() {
 
     //console.log("Position de la caméra : " + getPositionsCameraXYZ(joueur));
     //console.log("Angle : " + angleCamera);
+
 }
+
