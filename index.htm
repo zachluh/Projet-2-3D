@@ -82,6 +82,8 @@
           var matModeleVue = mat4.create();
 
           for (var i = 0; i < objScene3D.tabObjets3D.length; i++) {
+              if (objScene3D.tabObjets3D[i].binVisible === false) continue;
+              if (vueTopDown && objScene3D.tabObjets3D[i].estSpecial && !touchesActives[67]) continue;
               var vertex = objScene3D.tabObjets3D[i].vertex;
               var couleurs = objScene3D.tabObjets3D[i].couleurs;
               var maillage = objScene3D.tabObjets3D[i].maillage;

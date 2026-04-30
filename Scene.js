@@ -26,6 +26,7 @@ async function initScene3D(objgl) {
     
     // Initialiser le trésor
     initTresor(objgl);
+    tresorObj.estSpecial = true;
     tabObjets3D.push(tresorObj);
 
     // Initialiser les flèches
@@ -46,6 +47,7 @@ async function initScene3D(objgl) {
         mat4.translate(objet3D.matModele, getPositionsXYZ(objet3D.transformations));
         mat4.scale(objet3D.matModele, getEchellesXYZ(objet3D.transformations));
         mat4.rotateY(objet3D.matModele, getAngleY(objet3D.transformations) * Math.PI / 180);
+        objet3D.estSpecial = true;
         tabObjets3D.push(objet3D);
     };
     
@@ -64,6 +66,7 @@ async function initScene3D(objgl) {
             mat4.translate(transporteur.matModele, getPositionsXYZ(transporteur.transformations));
             mat4.scale(transporteur.matModele, getEchellesXYZ(transporteur.transformations));
             mat4.rotateX(transporteur.matModele, getAngleX(transporteur.transformations) * Math.PI / 180);
+            transporteur.estSpecial = true;
             tabObjets3D.push(transporteur);
         }
 
@@ -82,6 +85,7 @@ async function initScene3D(objgl) {
             mat4.rotateX(recepteur.matModele, getAngleX(recepteur.transformations) * Math.PI / 180);
 
             positionsRecepteurs.push(positionRecepteur);
+            recepteur.estSpecial = true;
             tabObjets3D.push(recepteur);
         }
     }
