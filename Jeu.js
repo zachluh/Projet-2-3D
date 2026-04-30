@@ -1,23 +1,32 @@
 var niveau = 1;
 var jeuActif = false;
 var timerActif = false;
-var tempsDebut = 0;
 var score = 300;
 var DUREE_NIVEAU = 60; // Durée d'un niveau en secondes (variable globale pour les tests)
+var nbOuvreurs = 4;
 
 var enModeVueAerienne = false;
 var tempsDebutVueAerienne = 0;
 var derniereSecondeVueAerienne = 0;
 
+// Delta-time timer: la vue aérienne fait avancer le chrono 2x plus vite
+var tempsEffectifEcouleMs = 0;
+var dernierTimestampJeu = 0;
 var _derniereSecondeRestante = -1;
 var _niveauEnRestart = false;
+
+function nbOuvreursInitiaux(n) {
+    return Math.max(0, 4 - Math.floor((n - 1) / 2));
+}
 
 function demarrerJeu() {
     niveau = 1;
     score = 300;
+    nbOuvreurs = nbOuvreursInitiaux(niveau);
     jeuActif = true;
     timerActif = true;
-    tempsDebut = Date.now();
+    tempsEffectifEcouleMs = 0;
+    dernierTimestampJeu = Date.now();
     _derniereSecondeRestante = -1;
     _niveauEnRestart = false;
     mettreAJourHUD(DUREE_NIVEAU);
@@ -27,10 +36,16 @@ function mettreAJourJeu() {
     if (!timerActif) return;
 
     var now = Date.now();
-    var tempsEcoule = Math.floor((now - tempsDebut) / 1000);
-    var tempsRestant = Math.max(0, DUREE_NIVEAU - tempsEcoule);
+    var delta = now - dernierTimestampJeu;
+    dernierTimestampJeu = now;
 
-    // Déduction de points en mode vue aérienne (-10 pts par seconde)
+    // Timer avance 2x plus vite en mode vue aérienne
+    var multiplicateur = enModeVueAerienne ? 2 : 1;
+    tempsEffectifEcouleMs += delta * multiplicateur;
+
+    var tempsRestant = Math.max(0, DUREE_NIVEAU - Math.floor(tempsEffectifEcouleMs / 1000));
+
+    // Déduction de points en mode vue aérienne (-10 pts par seconde réelle)
     if (enModeVueAerienne) {
         var secondesAeriennes = Math.floor((now - tempsDebutVueAerienne) / 1000);
         if (secondesAeriennes > derniereSecondeVueAerienne) {
@@ -40,7 +55,7 @@ function mettreAJourJeu() {
         }
     }
 
-    // Mettre à jour le HUD une fois par seconde seulement
+    // Mettre à jour le HUD une fois par seconde effective
     if (tempsRestant !== _derniereSecondeRestante) {
         _derniereSecondeRestante = tempsRestant;
         mettreAJourHUD(tempsRestant);
@@ -66,10 +81,12 @@ function recommencerNiveau() {
     }
 
     setTimeout(async function() {
+        nbOuvreurs = nbOuvreursInitiaux(niveau);
         joueur = initJoueur();
         angleCamera = -Math.PI / 2;
         // Les objets gardent leurs positions, seul le joueur et le timer sont remis à zéro
-        tempsDebut = Date.now();
+        tempsEffectifEcouleMs = 0;
+        dernierTimestampJeu = Date.now();
         _derniereSecondeRestante = -1;
         _niveauEnRestart = false;
         timerActif = true;
@@ -83,8 +100,7 @@ function passerNiveauSuivant() {
     timerActif = false;
     jeuActif = false;
 
-    var tempsEcoule = Math.floor((Date.now() - tempsDebut) / 1000);
-    var secondesRestantes = Math.max(0, DUREE_NIVEAU - tempsEcoule);
+    var secondesRestantes = Math.max(0, DUREE_NIVEAU - Math.floor(tempsEffectifEcouleMs / 1000));
     score += 10 * secondesRestantes;
 
     niveau++;
@@ -96,11 +112,13 @@ function passerNiveauSuivant() {
     }
 
     setTimeout(async function() {
+        nbOuvreurs = nbOuvreursInitiaux(niveau);
         initMatrice();
         joueur = initJoueur();
         angleCamera = -Math.PI / 2;
         objScene3D = await initScene3D(objgl);
-        tempsDebut = Date.now();
+        tempsEffectifEcouleMs = 0;
+        dernierTimestampJeu = Date.now();
         _derniereSecondeRestante = -1;
         timerActif = true;
         jeuActif = true;
@@ -108,11 +126,12 @@ function passerNiveauSuivant() {
     }, 2000);
 }
 
-// Appelé quand le joueur utilise un ouvreur de murs (espace)
 // Retourne true si l'ouvreur a pu être utilisé, false sinon
 function utiliserOuvreur() {
     if (score < 50) return false;
+    if (nbOuvreurs <= 0) return false;
     score -= 50;
+    nbOuvreurs--;
     mettreAJourHUD(_derniereSecondeRestante >= 0 ? _derniereSecondeRestante : DUREE_NIVEAU);
     return true;
 }
@@ -156,9 +175,11 @@ function mettreAJourHUD(tempsRestant) {
     var niveauEl = document.getElementById('hud-niveau');
     var timerEl = document.getElementById('hud-timer');
     var scoreEl = document.getElementById('hud-score');
+    var mursEl = document.getElementById('hud-murs');
 
-    if (niveauEl) niveauEl.textContent = 'Niveau ' + niveau;
-    if (scoreEl) scoreEl.textContent = score + ' pts';
+    if (niveauEl) niveauEl.textContent = 'Niveau ' + niveau;
+    if (scoreEl) scoreEl.textContent = score + ' pts';
+    if (mursEl) mursEl.textContent = nbOuvreurs + ' x';
 
     if (timerEl) {
         timerEl.textContent = tempsRestant + 's';

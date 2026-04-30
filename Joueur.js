@@ -17,8 +17,9 @@ function enfoncerTouche(event) {
     event.preventDefault();
 
     // Page Up — entrer en vue de dessus
-    if (event.keyCode === 33) {
+    if (event.keyCode === 33 || event.keyCode === 187) {
         if (!vueTopDown) {
+            if (!activerVueAerienne()) return; // score < 10, vue aérienne refusée
             vueTopDown = true;
             cameraAvantTopDown = joueur.slice();
             angleCameraAvantTopDown = angleCamera;
@@ -30,9 +31,10 @@ function enfoncerTouche(event) {
     }
 
     // Page Down — quitter la vue de dessus
-    if (event.keyCode === 34) {
+    if (event.keyCode === 34 || event.keyCode === 189) {
         if (vueTopDown) {
             vueTopDown = false;
+            desactiverVueAerienne();
             joueur.splice(0, 9,
                 cameraAvantTopDown[0], cameraAvantTopDown[1], cameraAvantTopDown[2],
                 cameraAvantTopDown[3], cameraAvantTopDown[4], cameraAvantTopDown[5],
@@ -40,6 +42,11 @@ function enfoncerTouche(event) {
             angleCamera = angleCameraAvantTopDown;
         }
         return;
+    }
+
+    // Espace — ouvrir le mur devant le joueur
+    if (event.keyCode === 32) {
+        utiliserOuvreur()
     }
 
     touchesActives[event.keyCode] = true;
