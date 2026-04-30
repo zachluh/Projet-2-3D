@@ -16,8 +16,7 @@ A:hover IMG { border-style:double; border-width:2px; border-color:Green;}
 #hud {
     width: 100%;
     max-width: 1080px;
-    background: rgba(30, 30, 30, 0.92);
-    border-radius: 12px;
+    background: rgba(256, 256, 256, 0.92);
     border: 1px solid #222;
     box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     display: flex;
@@ -37,7 +36,7 @@ A:hover IMG { border-style:double; border-width:2px; border-color:Green;}
     letter-spacing: 1.5px;
     text-transform: uppercase;
     min-width: 120px;
-    color: #b3e5fc;
+    color: red;
 }
 
 #hud-timer {
@@ -45,7 +44,7 @@ A:hover IMG { border-style:double; border-width:2px; border-color:Green;}
     letter-spacing: 2px;
     text-align: center;
     min-width: 90px;
-    color: #ffd54f;
+    color: red;
     background: rgba(255,255,255,0.04);
     border-radius: 6px;
     padding: 4px 18px;
@@ -53,7 +52,7 @@ A:hover IMG { border-style:double; border-width:2px; border-color:Green;}
 }
 
 #hud-timer.urgent {
-    color: #ff5252;
+    color: red;
     background: rgba(255,82,82,0.08);
 }
 
@@ -62,12 +61,12 @@ A:hover IMG { border-style:double; border-width:2px; border-color:Green;}
     letter-spacing: 1px;
     text-align: right;
     min-width: 120px;
-    color: #c8e6c9;
+    color: red;
 }
 
 #hud-murs {
     font-size: 18px;
-    color: #ff5252;
+    color: red;
     background: rgba(255,82,82,0.08);
 }
 

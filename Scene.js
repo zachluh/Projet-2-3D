@@ -54,7 +54,7 @@ async function initScene3D(objgl) {
 
     let teleporteurs = await initTeleporteurs();
     for (let i = 0; i < teleporteurs.length; i++) {
-        if (i < teleporteurs.length / 2) {
+        if (i < nbTransporteurs) {
             let transporteur = creerTeleporter(objgl, teleporteurs[i].positions, teleporteurs[i].texCoords, teleporteurs[i].indices, 'modeles/teleporteur/textures/Spawnlocation2Mtl_baseColor.png');
             let positionTransporteur = trouveCaseVide(matrice, 6);
             setPositionsXYZ([positionTransporteur[0], -1.5, positionTransporteur[1]], transporteur.transformations);

@@ -12,7 +12,7 @@ async function initFleches() {
     const primitive = mesh.listPrimitives()[0];
 
 
-    for (let i = 0; i < 18; i++) {
+    for (let i = 0; i < nbFleches; i++) {
         let fleche = new Object();
         fleche.positions = primitive.getAttribute('POSITION').getArray();
         fleche.indices = primitive.getIndices().getArray();

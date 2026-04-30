@@ -4,6 +4,9 @@ var timerActif = false;
 var score = 300;
 var DUREE_NIVEAU = 60; // Durée d'un niveau en secondes (variable globale pour les tests)
 var nbOuvreurs = 4;
+var nbFleches = 18;
+var nbTransporteurs = 0;
+var nbRecepteurs = 0;
 
 var enModeVueAerienne = false;
 var tempsDebutVueAerienne = 0;
@@ -19,10 +22,25 @@ function nbOuvreursInitiaux(n) {
     return Math.max(0, 4 - Math.floor((n - 1) / 2));
 }
 
+function nbFlechesInitiaux(n) {
+    return 20 - n*2;
+}
+
+function nbTransporteursInitiaux(n) {
+    return Math.floor(n / 2);
+}
+
+function nbRecepteursInitiaux(n) {
+    return n-1;
+}
+
 function demarrerJeu() {
     niveau = 1;
     score = 300;
     nbOuvreurs = nbOuvreursInitiaux(niveau);
+    nbFleches = nbFlechesInitiaux(niveau);
+    nbTransporteurs = nbTransporteursInitiaux(niveau);
+    nbRecepteurs = nbRecepteursInitiaux(niveau);
     jeuActif = true;
     timerActif = true;
     tempsEffectifEcouleMs = 0;
@@ -82,6 +100,8 @@ function recommencerNiveau() {
 
     setTimeout(async function() {
         nbOuvreurs = nbOuvreursInitiaux(niveau);
+        nbFleches = nbFlechesInitiaux(niveau);
+        nbTransporteurs = nbTransporteursInitiaux(niveau);
         joueur = initJoueur();
         angleCamera = -Math.PI / 2;
         // Les objets gardent leurs positions, seul le joueur et le timer sont remis à zéro
@@ -113,6 +133,9 @@ function passerNiveauSuivant() {
 
     setTimeout(async function() {
         nbOuvreurs = nbOuvreursInitiaux(niveau);
+        nbFleches = nbFlechesInitiaux(niveau);
+        nbTransporteurs = nbTransporteursInitiaux(niveau);
+        nbRecepteurs = nbRecepteursInitiaux(niveau);
         initMatrice();
         joueur = initJoueur();
         angleCamera = -Math.PI / 2;
@@ -127,9 +150,10 @@ function passerNiveauSuivant() {
 }
 
 // Retourne true si l'ouvreur a pu être utilisé, false sinon
-function utiliserOuvreur() {
+function utiliserOuvreur(x, z) {
     if (score < 50) return false;
     if (nbOuvreurs <= 0) return false;
+    if (matrice[x][z] !== 1) return false; 
     score -= 50;
     nbOuvreurs--;
     mettreAJourHUD(_derniereSecondeRestante >= 0 ? _derniereSecondeRestante : DUREE_NIVEAU);

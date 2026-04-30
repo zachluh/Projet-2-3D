@@ -19,7 +19,7 @@ async function initTeleporteurs() {
 
     let teleporteurs = [];
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < (nbTransporteurs + nbRecepteurs); i++) {
         let teleporteur = new Object();
         teleporteur.positions = positions;
         teleporteur.texCoords = texCoords;

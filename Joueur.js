@@ -46,7 +46,24 @@ function enfoncerTouche(event) {
 
     // Espace — ouvrir le mur devant le joueur
     if (event.keyCode === 32) {
-        utiliserOuvreur()
+
+            console.log("Ouvreur utilisé !");
+            var pos = getPositionJoueurDansMatrice();
+            var dirX = Math.sin(angleCamera);
+            var dirZ = Math.cos(angleCamera);
+            var nextX = Math.round(pos[0] + dirX);
+            var nextZ = Math.round(pos[1] + dirZ);
+            if (utiliserOuvreur(nextX, nextZ)) {
+                matrice[nextX][nextZ] = 0;
+
+                var idx = nextX * matrice[0].length + nextZ;
+                var obj = objScene3D.tabObjets3D[idx];
+                mat4.identity(obj.matModele);
+                mat4.translate(obj.matModele, [nextX, 0, nextZ]);
+
+                console.log("Mur devant ouvert en (" + nextX + ", " + nextZ + ")");
+            }
+        
     }
 
     touchesActives[event.keyCode] = true;
