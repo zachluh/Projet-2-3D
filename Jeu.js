@@ -1,6 +1,7 @@
 var niveau = 1;
 var jeuActif = false;
 var timerActif = false;
+var jeuEnCours = false;
 var score = 300;
 var DUREE_NIVEAU = 60; // Durée d'un niveau en secondes (variable globale pour les tests)
 var nbOuvreurs = 4;
@@ -35,6 +36,9 @@ function nbRecepteursInitiaux(n) {
 }
 
 function demarrerJeu() {
+    jeuEnCours = true;
+    var ecranDebut = document.getElementById('ecran-debut');
+    if (ecranDebut) ecranDebut.style.display = 'none';
     niveau = 1;
     score = 300;
     nbOuvreurs = nbOuvreursInitiaux(niveau);
@@ -175,11 +179,9 @@ function desactiverVueAerienne() {
 function declencherGameOver() {
     jeuActif = false;
     timerActif = false;
-    var timerEl = document.getElementById('hud-timer');
-    if (timerEl) {
-        timerEl.textContent = 'GAME OVER';
-        timerEl.classList.add('urgent');
-    }
+    mettreAJourHUD(0);
+    var ecranGameOver = document.getElementById('ecran-gameover');
+    if (ecranGameOver) ecranGameOver.style.display = 'flex';
     console.log("=== GAME OVER === Score final : " + score);
 }
 
