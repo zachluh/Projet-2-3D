@@ -3,9 +3,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <title>Trois pyramides par Zachary Tristan Luheshi</title>
+  <title>Thesaurus - Ken-Li Roux et Zachary Luheshi</title>
   
-  <link rel="stylesheet" type="text/css" href="StyleLabo10.css" /> 
+  <link rel="stylesheet" type="text/css" href="styles.css" /> 
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
    
   <script type="text/javascript" src="WebGl.js"></script>
@@ -57,6 +57,19 @@
         if (jeuActif) miseAJourPositionJoueur();
         verifierCollisionTresor();
         verifierCollisionTransporteur();
+        animationTeleporteur();
+        // Rebuild teleporter matrices with updated rotation angle
+        if (objScene3D) {
+            for (var i = 0; i < objScene3D.tabObjets3D.length; i++) {
+                var obj = objScene3D.tabObjets3D[i];
+                if (!obj.estTeleporteur) continue;
+                mat4.identity(obj.matModele);
+                mat4.translate(obj.matModele, getPositionsXYZ(obj.transformations));
+                mat4.rotateX(obj.matModele, getAngleX(obj.transformations) * Math.PI / 180);
+                mat4.rotateZ(obj.matModele, getAngleTeleporteurs() * Math.PI / 180);
+                mat4.scale(obj.matModele, getEchellesXYZ(obj.transformations));
+            }
+        }
         effacerCanevas(objgl);
         dessiner();
     }

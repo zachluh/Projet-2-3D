@@ -179,9 +179,11 @@ function desactiverVueAerienne() {
 function declencherGameOver() {
     jeuActif = false;
     timerActif = false;
-    mettreAJourHUD(0);
-    var ecranGameOver = document.getElementById('ecran-gameover');
-    if (ecranGameOver) ecranGameOver.style.display = 'flex';
+    var timerEl = document.getElementById('hud-timer');
+    if (timerEl) {
+        timerEl.textContent = 'GAME OVER';
+        timerEl.classList.add('urgent');
+    }
     console.log("=== GAME OVER === Score final : " + score);
 }
 
