@@ -1,7 +1,3 @@
-var vueTopDown = false;
-var cameraAvantTopDown = null;
-var angleCameraAvantTopDown = 0;
-
 function initJoueur() {
         var joueur = creerCamera();
         setPositionsCameraXYZ([15, 1, 15], joueur);
@@ -76,18 +72,23 @@ function enfoncerTouche(event) {
 
 }
 
+
+//Enleve la touche de touchesActives lorsqu'elle est relachée
 function relacherTouche(event) {
     if (!event) return;
     event.preventDefault();
     touchesActives[event.keyCode] = false;
 }
 
+
+//Fonction util pour situer le joueur relatif à la matrice
 function getPositionJoueurDansMatrice() {
     var posX = Math.round(getPositionCameraX(joueur));
     var posZ = Math.round(getPositionCameraZ(joueur));
     return [posX, posZ];
 }
 
+//Vérifier s'il y a un mur devant le joueur
 function murDevant() {
     var pos = getPositionJoueurDansMatrice();
     var dirX = Math.sin(angleCamera);
@@ -97,6 +98,7 @@ function murDevant() {
     return matrice[nextX][nextZ] === 1 || matrice[nextX][nextZ] === 2;
 }
 
+//Verifier s'il y a un mur derrière le joueur
 function murDerriere() {
     var pos = getPositionJoueurDansMatrice();
     var dirX = Math.sin(angleCamera);
@@ -114,6 +116,21 @@ function verifierCollisionTransporteur() {
         setPositionCameraZ(posRecepteur[1], joueur);
         setCibleCameraX(posRecepteur[0] + Math.sin(angleCamera), joueur);
         setCibleCameraZ(posRecepteur[1] + Math.cos(angleCamera), joueur);
+    }
+}
+
+function verifierCollisionTresor() {
+    if (tresorCollecte || !positionTresor) return;
+
+    var px = getPositionCameraX(joueur);
+    var pz = getPositionCameraZ(joueur);
+    var dx = px - positionTresor[0];
+    var dz = pz - positionTresor[1];
+
+    if (Math.sqrt(dx * dx + dz * dz) < 0.5) {
+        tresorCollecte = true;
+        tresorObj.binVisible = false;
+        passerNiveauSuivant();
     }
 }
 

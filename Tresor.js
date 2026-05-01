@@ -1,19 +1,6 @@
-var positionTresor = null;
-var tresorCollecte = false;
 
-function choisirPositionTresor() {
-    // chose a position if it is an empty space
-    // var corridors = [];
-    // for (var i = 1; i < matrice.length - 1; i++) {
-    //     for (var j = 1; j < matrice[i].length - 1; j++) {
-    //         if (matrice[i][j] === 0) corridors.push([i, j]);
-    //     }
-    // }
-    // return corridors[Math.floor(Math.random() * corridors.length)];
-    return [12, 16]; // hard coded for test
-}
 
-//yes i vibe coded the treasure sowwy (remove when remise)
+
 // Hardcoded treasure chest vertexes (no variables!)
 function creerVertexTresor(objgl) {
     var tabVertex = [
@@ -80,18 +67,3 @@ function initTresor(objgl) {
     mat4.translate(tresorObj.matModele, getPositionsXYZ(tresorObj.transformations));
 }
 
-
-function verifierCollisionTresor() {
-    if (tresorCollecte || !positionTresor) return;
-
-    var px = getPositionCameraX(joueur);
-    var pz = getPositionCameraZ(joueur);
-    var dx = px - positionTresor[0];
-    var dz = pz - positionTresor[1];
-
-    if (Math.sqrt(dx * dx + dz * dz) < 0.5) {
-        tresorCollecte = true;
-        tresorObj.binVisible = false;
-        passerNiveauSuivant();
-    }
-}

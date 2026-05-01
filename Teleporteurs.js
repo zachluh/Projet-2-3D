@@ -1,8 +1,5 @@
 import { WebIO } from 'https://cdn.jsdelivr.net/npm/@gltf-transform/core/+esm';
 
-let positionsRecepteurs = [];
-let angleTeleporteurs = 0;
-
 async function initTeleporteurs() {
     
 
@@ -92,11 +89,35 @@ function creerTeleporter(objgl, positions, texCoords, indices, imageSrc) {
     return objet3D;
 }
 
+function initTeleporteur(teleporteur, i) {
+    var teleporteurOuRecepteur = i < nbTransporteurs ? 6 : 7;  
+    let positionTeleporteur = trouveCaseVide(matrice, teleporteurOuRecepteur);
+    setPositionsXYZ([positionTeleporteur[0], 0.5, positionTeleporteur[1]], teleporteur.transformations);
+    setEchellesXYZ([0.1, 0.1, 0.2], teleporteur.transformations);
+    setAngleX(90, teleporteur.transformations);
+    setAngleZ(getAngleTeleporteurs(), teleporteur.transformations);
+
+    teleporteur.matModele = mat4.create();
+    mat4.identity(teleporteur.matModele);
+    mat4.translate(teleporteur.matModele, getPositionsXYZ(teleporteur.transformations));
+    mat4.rotateX(teleporteur.matModele, getAngleX(teleporteur.transformations) * Math.PI / 180);
+    mat4.rotateZ(teleporteur.matModele, getAngleZ(teleporteur.transformations) * Math.PI / 180);
+    mat4.scale(teleporteur.matModele, getEchellesXYZ(teleporteur.transformations));
+    teleporteur.estSpecial = true;
+    teleporteur.estTeleporteur = true;
+    if (i >= nbTransporteurs) {
+        teleporteur.estInversee = true;
+        positionsRecepteurs.push(positionTeleporteur); 
+    }
+    tabObjets3D.push(teleporteur);
+}
+
 function animationTeleporteur() {
-    angleTeleporteurs += 2;
+    angleTeleporteurs += 5;
 }
 
 window.initTeleporteurs = initTeleporteurs;
+window.initTeleporteur = initTeleporteur;
 window.creerTeleporter = creerTeleporter;
 window.positionsRecepteurs = positionsRecepteurs;
 window.getAngleTeleporteurs = function() { return angleTeleporteurs; };

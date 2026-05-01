@@ -61,6 +61,24 @@ function creerFleche(objgl, positionsArray, indicesArray) {
     return objet3D;
 }
 
+function initFleche(fleche, i) {
+        let position = trouveCaseVide(matrice, 4);
+        console.log("Position de la flèche " + i + ": " + position);
+        setPositionsXYZ([position[0], 1.2, position[1]], fleche.transformations);
+        if (i === 0) {
+            setPositionsXYZ([12, 1.2, 15], fleche.transformations);
+        }
+        setEchellesXYZ([0.2, 0.2, 0.2], fleche.transformations); // Positionner la flèche au centre de la scène
+        orienterFlecheVersPoint(fleche);
+        fleche.matModele = mat4.create();
+        mat4.identity(fleche.matModele);
+        mat4.translate(fleche.matModele, getPositionsXYZ(fleche.transformations));
+        mat4.scale(fleche.matModele, getEchellesXYZ(fleche.transformations));
+        mat4.rotateY(fleche.matModele, getAngleY(fleche.transformations) * Math.PI / 180);
+        fleche.estSpecial = true;
+        tabObjets3D.push(fleche);
+} 
+
 function orienterFlecheVersPoint(arrow) {
     const pos = getPositionsXYZ(arrow.transformations);
     const posTresor = getPositionsXYZ(tresorObj.transformations);
@@ -77,5 +95,6 @@ function orienterFlecheVersPoint(arrow) {
 }
 
 window.initFleches = initFleches;
+window.initFleche = initFleche;
 window.creerFleche = creerFleche;
 window.orienterFlecheVersPoint = orienterFlecheVersPoint;

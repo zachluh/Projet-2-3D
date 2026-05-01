@@ -1,39 +1,3 @@
-var niveau = 1;
-var jeuActif = false;
-var timerActif = false;
-var jeuEnCours = false;
-var score = 300;
-var DUREE_NIVEAU = 60; // Durée d'un niveau en secondes (variable globale pour les tests)
-var nbOuvreurs = 4;
-var nbFleches = 18;
-var nbTransporteurs = 0;
-var nbRecepteurs = 0;
-
-var enModeVueAerienne = false;
-var tempsDebutVueAerienne = 0;
-var derniereSecondeVueAerienne = 0;
-
-// Delta-time timer: la vue aérienne fait avancer le chrono 2x plus vite
-var tempsEffectifEcouleMs = 0;
-var dernierTimestampJeu = 0;
-var _derniereSecondeRestante = -1;
-var _niveauEnRestart = false;
-
-function nbOuvreursInitiaux(n) {
-    return Math.max(0, 4 - Math.floor((n - 1) / 2));
-}
-
-function nbFlechesInitiaux(n) {
-    return 20 - n*2;
-}
-
-function nbTransporteursInitiaux(n) {
-    return Math.floor(n / 2);
-}
-
-function nbRecepteursInitiaux(n) {
-    return n-1;
-}
 
 function demarrerJeu() {
     jeuEnCours = true;
