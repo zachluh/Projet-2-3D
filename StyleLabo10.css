@@ -3,7 +3,7 @@
 .sLargeurDiv { width:1100px; padding-left:10px; padding-right:10px;}
 
 .sEntete {margin-bottom:5px;  border-bottom-width:2px;  border-bottom-style:solid; }
-.sCorps { padding: 0; }
+.sCorps { padding: 0; position: relative; }
 .sPiedDePage {margin-top:5px;  border-top-width:2px;  border-top-style:solid; }
 .sTitreApp { font-size:150%; font-weight:bold; text-decoration:underline; }
 .sAuteurApp { font-variant:small-caps; font-style:italic; font-weight:bold;}
@@ -13,61 +13,88 @@ A:hover IMG { border-style:double; border-width:2px; border-color:Green;}
 
 #monCanvas { display: block; }
 
+#ecran-debut {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1080px;
+    height: 720px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 18px;
+    color: black;
+    pointer-events: none;
+    text-align: center;
+    padding: 0 60px;
+    box-sizing: border-box;
+    line-height: 2;
+}
+
+#ecran-gameover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1080px;
+    height: 720px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 32px;
+    color: #ff2222;
+    pointer-events: none;
+    text-align: center;
+    box-sizing: border-box;
+}
+
 #hud {
-    width: 100%;
-    max-width: 1080px;
-    background: rgba(256, 256, 256, 0.92);
-    border: 1px solid #222;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 1080px;
+    background: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 14px 32px;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    font-weight: 500;
-    color: #f5f5f5;
+    font-family: 'Press Start 2P', monospace;
+    color: #ffffff;
     user-select: none;
-    margin: 18px auto 0 auto;
 }
 
 #hud-niveau {
-    font-size: 18px;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    min-width: 120px;
-    color: red;
+    font-size: 13px;
+    color: #ff4444;
 }
 
 #hud-timer {
-    font-size: 28px;
-    letter-spacing: 2px;
+    font-size: 13px;
     text-align: center;
-    min-width: 90px;
-    color: red;
-    background: rgba(255,255,255,0.04);
-    border-radius: 6px;
-    padding: 4px 18px;
-    transition: color 0.3s, background 0.3s;
+    color: #ff4444;
+    transition: color 0.3s;
 }
 
 #hud-timer.urgent {
-    color: red;
-    background: rgba(255,82,82,0.08);
+    color: #ff0000;
+    animation: clignoter 0.6s step-start infinite;
+}
+
+@keyframes clignoter {
+    50% { opacity: 0; }
 }
 
 #hud-score {
-    font-size: 18px;
-    letter-spacing: 1px;
+    font-size: 13px;
     text-align: right;
-    min-width: 120px;
-    color: red;
+    color: #ff4444;
 }
 
 #hud-murs {
-    font-size: 18px;
-    color: red;
-    background: rgba(255,82,82,0.08);
+    font-size: 13px;
+    color: #ff4444;
 }
 
 

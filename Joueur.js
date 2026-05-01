@@ -16,6 +16,12 @@ function enfoncerTouche(event) {
     if (!event) return;
     event.preventDefault();
 
+    // Lancer le jeu si on attend l'écran de démarrage
+    if (!jeuEnCours) {
+        demarrerJeu();
+        return;
+    }
+
     // Page Up — entrer en vue de dessus
     if (event.keyCode === 33 || event.keyCode === 187) {
         if (!vueTopDown) {

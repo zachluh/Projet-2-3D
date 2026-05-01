@@ -6,6 +6,7 @@
   <title>Trois pyramides par Zachary Tristan Luheshi</title>
   
   <link rel="stylesheet" type="text/css" href="StyleLabo10.css" /> 
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
    
   <script type="text/javascript" src="WebGl.js"></script>
   <script type="text/javascript" src="ShaderCouleursTextures.js"></script>
@@ -41,7 +42,6 @@
 
          effacerCanevas(objgl);
          dessiner();
-         demarrerJeu();
          animer(objgl, objProgShaders, objScene3D);
      }
 
@@ -197,6 +197,8 @@
 	   <canvas id="monCanvas" width="1080" height="720" >
 		    Votre navigateur ne supporte pas la balise canvas
 	    </canvas>
+	    <div id="ecran-debut">Pesez une touche pour commencer</div>
+	    <div id="ecran-gameover">GAME OVER</div>
 	    <div id="hud">
 	        <span id="hud-niveau">Niveau 1</span>
 	        <span id="hud-timer">60s</span>
