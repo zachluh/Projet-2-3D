@@ -12,25 +12,21 @@
   <script type="text/javascript" src="ShaderCouleursTextures.js"></script>
   <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
   <script type="text/javascript" src="Transformations.js"></script>
+  <script type="text/javascript" src="Config.js"></script>
   <script type="text/javascript" src="Utils.js"></script>
   <script type="text/javascript" src="Matrice.js"></script>
   <script type="text/javascript" src="Camera.js"></script>
-  <script type="module" src="Scene.js"></script>
+  <script type="text/javascript" src="Scene.js"></script>
   <script type="text/javascript" src="Joueur.js"></script>
   <script type="text/javascript" src="Tresor.js"></script>
   <script type="text/javascript" src="Jeu.js"></script>
+  <script type="text/javascript" src="Cubes.js"></script>
   <script type="module" src="Fleches.js"></script>
   <script type="module" src="Teleporteurs.js"></script>
 
 
  <script type="text/javascript">
 
-    var objgl = null;
-    var objProgShaders = null;
-    var objScene3D = null;
-    var joueur = null;
-    var angleCamera = -Math.PI / 2; 
-    var touchesActives = {};
    
      async function demarrer() {
          var objCanvas = document.getElementById('monCanvas');
@@ -79,37 +75,49 @@
           // La vue
           objgl.viewport(0, 0, objgl.drawingBufferWidth, objgl.drawingBufferHeight);
 
-          // Matrice de projection
-          var matProjection = mat4.create();
-          mat4.perspective(45, objgl.drawingBufferWidth / objgl.drawingBufferHeight, 0.01, 100, matProjection);
-          //mat4.perspective(45, 1, 0.01, 100, matProjection);
-          objgl.uniformMatrix4fv(objProgShaders.matProjection, false, matProjection);
+          // Matrice de projection — computed once since canvas size is fixed
+          if (!_matProjection) {
+              _matProjection = mat4.create();
+              mat4.perspective(45, objgl.drawingBufferWidth / objgl.drawingBufferHeight, 0.01, 100, _matProjection);
+          }
+          objgl.uniformMatrix4fv(objProgShaders.matProjection, false, _matProjection);
 
-          // Matrice de vue calculée une seule fois par frame
-          var matVue = mat4.create();
-          mat4.identity(matVue);
+          // Matrice de vue calculée une seule fois par frame (reuses pre-allocated buffer)
+          mat4.identity(_matVue);
           mat4.lookAt(getPositionsCameraXYZ(joueur),
             getCiblesCameraXYZ(joueur),
             getOrientationsXYZ(joueur),
-            matVue);
-          var matModeleVue = mat4.create();
+            _matVue);
+
+          // Player grid position for distance culling
+          var joueurX = getPositionCameraX(joueur);
+          var joueurZ = getPositionCameraZ(joueur);
 
           for (var i = 0; i < objScene3D.tabObjets3D.length; i++) {
-              if (objScene3D.tabObjets3D[i].binVisible === false) continue;
-              if (vueTopDown && objScene3D.tabObjets3D[i].estSpecial && !touchesActives[67]) continue;
-              var vertex = objScene3D.tabObjets3D[i].vertex;
-              var couleurs = objScene3D.tabObjets3D[i].couleurs;
-              var maillage = objScene3D.tabObjets3D[i].maillage;
-              var texture = objScene3D.tabObjets3D[i].texture;
-              var uv = objScene3D.tabObjets3D[i].uv;
-              var estTexturee = objScene3D.tabObjets3D[i].estTexturee;
-              var estInversee = objScene3D.tabObjets3D[i].estInversee;
+              var obj = objScene3D.tabObjets3D[i];
+              if (obj.binVisible === false) continue;
+              if (vueTopDown && obj.estSpecial && !touchesActives[67]) continue;
 
-              // Multiplier la vue par la matrice modèle précalculée
-              mat4.multiply(matVue, objScene3D.tabObjets3D[i].matModele, matModeleVue);
+              // Distance render : Si un cube esttrop loin du joueur, ne pas le dessiner (sauf en vue top-down où on veut tout voir)
+              if (!vueTopDown) {
+                  var dx = obj.gridX - joueurX;
+                  var dz = obj.gridZ - joueurZ;
+                  if (dx * dx + dz * dz > _DISTANCE_RENDER_MAX) continue;
+              }
+
+              var vertex = obj.vertex;
+              var couleurs = obj.couleurs;
+              var maillage = obj.maillage;
+              var texture = obj.texture;
+              var uv = obj.uv;
+              var estTexturee = obj.estTexturee;
+              var estInversee = obj.estInversee;
+
+              // Multiplier la vue par la matrice modèle précalculée (reuses pre-allocated buffer)
+              mat4.multiply(_matVue, obj.matModele, _matModeleVue);
 
               // Relier la matrice aux shaders
-              objgl.uniformMatrix4fv(objProgShaders.matModeleVue, false, matModeleVue);
+              objgl.uniformMatrix4fv(objProgShaders.matModeleVue, false, _matModeleVue);
 
               if (estTexturee) {
                   // Relier les vertex aux shaders
