@@ -57,35 +57,41 @@ async function initScene3D(objgl) {
         if (i < nbTransporteurs) {
             let transporteur = creerTeleporter(objgl, teleporteurs[i].positions, teleporteurs[i].texCoords, teleporteurs[i].indices, 'modeles/teleporteur/textures/Spawnlocation2Mtl_baseColor.png');
             let positionTransporteur = trouveCaseVide(matrice, 6);
-            setPositionsXYZ([positionTransporteur[0], -1.5, positionTransporteur[1]], transporteur.transformations);
-            setEchellesXYZ([0.2, 0.2, 0.2], transporteur.transformations);
-            setAngleX(0, transporteur.transformations);
+            setPositionsXYZ([positionTransporteur[0], 0.5, positionTransporteur[1]], transporteur.transformations);
+            setEchellesXYZ([0.1, 0.1, 0.2], transporteur.transformations);
+            setAngleX(90, transporteur.transformations);
+            setAngleZ(getAngleTeleporteurs(), transporteur.transformations);
 
             transporteur.matModele = mat4.create();
             mat4.identity(transporteur.matModele);
             mat4.translate(transporteur.matModele, getPositionsXYZ(transporteur.transformations));
-            mat4.scale(transporteur.matModele, getEchellesXYZ(transporteur.transformations));
             mat4.rotateX(transporteur.matModele, getAngleX(transporteur.transformations) * Math.PI / 180);
+            mat4.rotateZ(transporteur.matModele, getAngleZ(transporteur.transformations) * Math.PI / 180);
+            mat4.scale(transporteur.matModele, getEchellesXYZ(transporteur.transformations));
             transporteur.estSpecial = true;
+            transporteur.estTeleporteur = true;
             tabObjets3D.push(transporteur);
         }
 
         else {
             let positionRecepteur = trouveCaseVide(matrice, 7);
             let recepteur = creerTeleporter(objgl, teleporteurs[i].positions, teleporteurs[i].texCoords, teleporteurs[i].indices, 'modeles/teleporteur/textures/Spawnlocation2Mtl_baseColor.png');
-            setPositionsXYZ([positionRecepteur[0], -1.5, positionRecepteur[1]], recepteur.transformations);
-            setEchellesXYZ([0.2, 0.2, 0.2], recepteur.transformations);
-            setAngleX(0, recepteur.transformations);
+            setPositionsXYZ([positionRecepteur[0], 0.5, positionRecepteur[1]], recepteur.transformations);
+            setEchellesXYZ([0.1, 0.1, 0.2], recepteur.transformations);
+            setAngleX(90, recepteur.transformations);
+            setAngleZ(getAngleTeleporteurs(), recepteur.transformations);
             recepteur.estInversee = true;
 
             recepteur.matModele = mat4.create();
             mat4.identity(recepteur.matModele);
             mat4.translate(recepteur.matModele, getPositionsXYZ(recepteur.transformations));
-            mat4.scale(recepteur.matModele, getEchellesXYZ(recepteur.transformations));
             mat4.rotateX(recepteur.matModele, getAngleX(recepteur.transformations) * Math.PI / 180);
+            mat4.rotateZ(recepteur.matModele, getAngleZ(recepteur.transformations) * Math.PI / 180);
+            mat4.scale(recepteur.matModele, getEchellesXYZ(recepteur.transformations));
 
             positionsRecepteurs.push(positionRecepteur);
             recepteur.estSpecial = true;
+            recepteur.estTeleporteur = true;
             tabObjets3D.push(recepteur);
         }
     }
@@ -209,7 +215,7 @@ function creerCouleurs(objgl, type) {
     case 1: // Couleurs face avant pleine
         couleur = [1.0, 1.0, 1.0, 1.0]; // Blanc
         break;
-    case 2: 
+    case 2 || 6 || 7: 
         couleur = [1.0, 1.0, 1.0, 1.0]; // Noir
         break;
     case 3: 

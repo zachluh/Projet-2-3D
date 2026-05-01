@@ -1,6 +1,7 @@
 import { WebIO } from 'https://cdn.jsdelivr.net/npm/@gltf-transform/core/+esm';
 
 let positionsRecepteurs = [];
+let angleTeleporteurs = 0;
 
 async function initTeleporteurs() {
     
@@ -17,11 +18,27 @@ async function initTeleporteurs() {
     const texCoords = primitive.getAttribute('TEXCOORD_0').getArray();
     const indices = primitive.getIndices().getArray();
 
+    // Trouver le centre de l'objet pour centrer le pivot et faciliter les rotations + positionnement
+    const vertexCount = positions.length / 3;
+    let cx = 0, cy = 0, cz = 0;
+    for (let i = 0; i < positions.length; i += 3) {
+        cx += positions[i];
+        cy += positions[i + 1];
+        cz += positions[i + 2];
+    }
+    cx /= vertexCount; cy /= vertexCount; cz /= vertexCount;
+    const centeredPositions = new Float32Array(positions.length);
+    for (let i = 0; i < positions.length; i += 3) {
+        centeredPositions[i]     = positions[i]     - cx;
+        centeredPositions[i + 1] = positions[i + 1] - cy;
+        centeredPositions[i + 2] = positions[i + 2] - cz;
+    }
+
     let teleporteurs = [];
 
     for (let i = 0; i < (nbTransporteurs + nbRecepteurs); i++) {
         let teleporteur = new Object();
-        teleporteur.positions = positions;
+        teleporteur.positions = centeredPositions;
         teleporteur.texCoords = texCoords;
         teleporteur.indices = indices;
         teleporteurs.push(teleporteur);
@@ -66,8 +83,8 @@ function creerTeleporter(objgl, positions, texCoords, indices, imageSrc) {
     };
 
     objet3D.vertex = vertexBuffer;
-    objet3D.uv = uvBuffer;              // NEW
-    objet3D.texture = texture;          // NEW
+    objet3D.uv = uvBuffer;              
+    objet3D.texture = texture;          
     objet3D.maillage = indexBuffer;
     objet3D.transformations = creerTransformations();
     objet3D.estTexturee = true;              
@@ -75,6 +92,12 @@ function creerTeleporter(objgl, positions, texCoords, indices, imageSrc) {
     return objet3D;
 }
 
+function animationTeleporteur() {
+    angleTeleporteurs += 2;
+}
+
 window.initTeleporteurs = initTeleporteurs;
 window.creerTeleporter = creerTeleporter;
 window.positionsRecepteurs = positionsRecepteurs;
+window.getAngleTeleporteurs = function() { return angleTeleporteurs; };
+window.animationTeleporteur = animationTeleporteur;
