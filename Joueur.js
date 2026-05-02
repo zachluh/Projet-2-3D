@@ -116,6 +116,7 @@ function verifierCollisionTransporteur() {
         setPositionCameraZ(posRecepteur[1], joueur);
         setCibleCameraX(posRecepteur[0] + Math.sin(angleCamera), joueur);
         setCibleCameraZ(posRecepteur[1] + Math.cos(angleCamera), joueur);
+        sonTeleporte();
     }
 }
 

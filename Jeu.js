@@ -16,6 +16,7 @@ function demarrerJeu() {
     _derniereSecondeRestante = -1;
     _niveauEnRestart = false;
     mettreAJourHUD(DUREE_NIVEAU);
+    sonNouveauNiveau();
 }
 
 function mettreAJourJeu() {
@@ -50,6 +51,7 @@ function mettreAJourJeu() {
     // Temps écoulé : recommencer le niveau
     if (tempsRestant === 0) {
         timerActif = false;
+        sonTempsEcoule();
         recommencerNiveau();
     }
 }
@@ -80,6 +82,7 @@ function recommencerNiveau() {
         timerActif = true;
         jeuActif = true;
         mettreAJourHUD(DUREE_NIVEAU);
+        sonNouveauNiveau();
     }, 2000);
 }
 
@@ -87,6 +90,7 @@ function passerNiveauSuivant() {
     if (!jeuActif) return;
     timerActif = false;
     jeuActif = false;
+    sonTresorTrouve();
 
     var secondesRestantes = Math.max(0, DUREE_NIVEAU - Math.floor(tempsEffectifEcouleMs / 1000));
     score += 10 * secondesRestantes;
@@ -114,6 +118,7 @@ function passerNiveauSuivant() {
         timerActif = true;
         jeuActif = true;
         mettreAJourHUD(DUREE_NIVEAU);
+        sonNouveauNiveau();
     }, 2000);
 }
 
@@ -124,6 +129,7 @@ function utiliserOuvreur(x, z) {
     if (matrice[x][z] !== 1) return false; 
     score -= 50;
     nbOuvreurs--;
+    sonMurOuvert();
     mettreAJourHUD(_derniereSecondeRestante >= 0 ? _derniereSecondeRestante : DUREE_NIVEAU);
     return true;
 }
@@ -143,6 +149,7 @@ function desactiverVueAerienne() {
 function declencherGameOver() {
     jeuActif = false;
     timerActif = false;
+    sonGameOver();
     var timerEl = document.getElementById('hud-timer');
     if (timerEl) {
         timerEl.textContent = 'GAME OVER';
@@ -154,6 +161,7 @@ function declencherGameOver() {
 function declencherVictoire() {
     jeuActif = false;
     timerActif = false;
+    sonVictoire();
     var timerEl = document.getElementById('hud-timer');
     if (timerEl) {
         timerEl.textContent = 'VICTOIRE!';

@@ -17,6 +17,7 @@
   <script type="text/javascript" src="Matrice.js"></script>
   <script type="text/javascript" src="Camera.js"></script>
   <script type="text/javascript" src="Scene.js"></script>
+  <script type="text/javascript" src="Sound.js"></script>
   <script type="text/javascript" src="Joueur.js"></script>
   <script type="text/javascript" src="Tresor.js"></script>
   <script type="text/javascript" src="Jeu.js"></script>
@@ -33,6 +34,7 @@
          objgl = initWebGL(objCanvas);  // Initialise le contexte WebGL
          objProgShaders = initShaders(objgl);
          initMatrice();
+         await prechargerSons();
          objScene3D = await initScene3D(objgl);
          joueur = initJoueur();
 
