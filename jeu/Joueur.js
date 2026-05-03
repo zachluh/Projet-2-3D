@@ -88,24 +88,22 @@ function getPositionJoueurDansMatrice() {
     return [posX, posZ];
 }
 
-//Vérifier s'il y a un mur devant le joueur
-function murDevant() {
-    var pos = getPositionJoueurDansMatrice();
-    var dirX = Math.sin(angleCamera);
-    var dirZ = Math.cos(angleCamera);
-    var nextX = Math.round(pos[0] + dirX);
-    var nextZ = Math.round(pos[1] + dirZ);
-    return matrice[nextX][nextZ] === 1 || matrice[nextX][nextZ] === 2;
-}
-
-//Verifier s'il y a un mur derrière le joueur
-function murDerriere() {
-    var pos = getPositionJoueurDansMatrice();
-    var dirX = Math.sin(angleCamera);
-    var dirZ = Math.cos(angleCamera);
-    var nextX = Math.round(pos[0] - dirX);
-    var nextZ = Math.round(pos[1] - dirZ);
-    return matrice[nextX][nextZ] === 1 || matrice[nextX][nextZ] === 2;
+// Vérifie si la position (x, z) en virgule flottante est trop proche d'un mur (marge de 0.4 unité)
+function positionCollide(x, z) {
+    var margin = 0.2;
+    var coins = [
+        [x - margin, z - margin],
+        [x - margin, z + margin],
+        [x + margin, z - margin],
+        [x + margin, z + margin]
+    ];
+    for (var c of coins) {
+        var ix = Math.round(c[0]);
+        var iz = Math.round(c[1]);
+        if (!matrice[ix] || matrice[ix][iz] === undefined) return true;
+        if (matrice[ix][iz] === 1 || matrice[ix][iz] === 2) return true;
+    }
+    return false;
 }
 
 function verifierCollisionTransporteur() {
@@ -159,15 +157,15 @@ function miseAJourPositionJoueur() {
     if (touchesActives[39]) {// Flèche droite — tourner à droite
         angleCamera -= vitesseRotation;
     }
-    if (touchesActives[38] && !murDevant()) {// Flèche haut — avancer dans la direction visée
-        posX += dirX * vitesse;
-        posZ += dirZ * vitesse;
+    if (touchesActives[38]) {// Flèche haut — avancer dans la direction visée
+        if (!positionCollide(posX + dirX * vitesse, posZ)) posX += dirX * vitesse;
+        if (!positionCollide(posX, posZ + dirZ * vitesse)) posZ += dirZ * vitesse;
         setPositionCameraX(posX, joueur);
         setPositionCameraZ(posZ, joueur);
     }
-    if (touchesActives[40] && !murDerriere()) {// Flèche bas — reculer
-        posX -= dirX * vitesse;
-        posZ -= dirZ * vitesse;
+    if (touchesActives[40]) {// Flèche bas — reculer
+        if (!positionCollide(posX - dirX * vitesse, posZ)) posX -= dirX * vitesse;
+        if (!positionCollide(posX, posZ - dirZ * vitesse)) posZ -= dirZ * vitesse;
         setPositionCameraX(posX, joueur);
         setPositionCameraZ(posZ, joueur);
     }

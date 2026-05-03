@@ -33,5 +33,5 @@ let ligne31 = new Array(31).fill(2);
 
 var matrice = null
 initMatrice = function() {
-    matrice = [ligne1, ligne2, ligne3, ligne4, ligne5, ligne6, ligne7, ligne8, ligne9, ligne10, ligne11, ligne12, ligne13, ligne14, ligne15, ligne16, ligne17, ligne18, ligne19, ligne20, ligne21, ligne22, ligne23, ligne24, ligne25, ligne26, ligne27, ligne28, ligne29,ligne31];
+    matrice = [ligne1, ligne2, ligne3, ligne4, ligne5, ligne6, ligne7, ligne8, ligne9, ligne10, ligne11, ligne12, ligne13, ligne14, ligne15, ligne16, ligne17, ligne18, ligne19, ligne20, ligne21, ligne22, ligne23, ligne24, ligne25, ligne26, ligne27, ligne28, ligne29,ligne31].map(row => row.slice());
 }
