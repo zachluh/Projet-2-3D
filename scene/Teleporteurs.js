@@ -93,6 +93,8 @@ function initTeleporteur(teleporteur, i) {
     var teleporteurOuRecepteur = i < nbTransporteurs ? 6 : 7;  
     let positionTeleporteur = trouveCaseVide(matrice, teleporteurOuRecepteur);
     setPositionsXYZ([positionTeleporteur[0], 0.5, positionTeleporteur[1]], teleporteur.transformations);
+    teleporteur.gridX = positionTeleporteur[0];
+    teleporteur.gridZ = positionTeleporteur[1];
     setEchellesXYZ([0.1, 0.1, 0.2], teleporteur.transformations);
     setAngleX(90, teleporteur.transformations);
     setAngleZ(getAngleTeleporteurs(), teleporteur.transformations);

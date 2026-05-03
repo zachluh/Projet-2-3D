@@ -61,6 +61,8 @@ function initTresor(objgl) {
     
 
     setPositionsXYZ([positionTresor[0], 0.5, positionTresor[1]], tresorObj.transformations);
+    tresorObj.gridX = positionTresor[0];
+    tresorObj.gridZ = positionTresor[1];
 
     tresorObj.matModele = mat4.create();
     mat4.identity(tresorObj.matModele);

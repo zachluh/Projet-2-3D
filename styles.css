@@ -13,7 +13,7 @@ A:hover IMG { border-style:double; border-width:2px; border-color:Green;}
 
 #monCanvas { display: block; }
 
-#ecran-debut {
+#ecran-text {
     position: absolute;
     top: 0;
     left: 0;
@@ -22,6 +22,7 @@ A:hover IMG { border-style:double; border-width:2px; border-color:Green;}
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: red;
     font-family: 'Press Start 2P', monospace;
     font-size: 18px;
     color: black;
@@ -32,53 +33,33 @@ A:hover IMG { border-style:double; border-width:2px; border-color:Green;}
     line-height: 2;
 }
 
-#ecran-gameover {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 1080px;
-    height: 720px;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 32px;
-    color: #ff2222;
-    pointer-events: none;
-    text-align: center;
-    box-sizing: border-box;
-}
-
 #hud {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 1080px;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 1);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 14px 32px;
     box-sizing: border-box;
     font-family: 'Press Start 2P', monospace;
-    color: #ffffff;
+    color: red;
     user-select: none;
 }
 
 #hud-niveau {
     font-size: 13px;
-    color: #ff4444;
 }
 
 #hud-timer {
     font-size: 13px;
     text-align: center;
-    color: #ff4444;
     transition: color 0.3s;
 }
 
 #hud-timer.urgent {
-    color: #ff0000;
     animation: clignoter 0.6s step-start infinite;
 }
 
@@ -89,29 +70,10 @@ A:hover IMG { border-style:double; border-width:2px; border-color:Green;}
 #hud-score {
     font-size: 13px;
     text-align: right;
-    color: #ff4444;
 }
 
 #hud-murs {
     font-size: 13px;
-    color: #ff4444;
-}
-
-#ecran-niveau {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 1080px;
-    height: 720px;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 48px;
-    color: #ff2222;
-    pointer-events: none;
-    text-align: center;
-    box-sizing: border-box;
 }
 
 

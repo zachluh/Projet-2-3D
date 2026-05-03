@@ -1,8 +1,9 @@
 
 function demarrerJeu() {
+    sonNouveauNiveau();
     jeuEnCours = true;
-    var ecranDebut = document.getElementById('ecran-debut');
-    if (ecranDebut) ecranDebut.style.display = 'none';
+    fermerPressStart();
+    afficherNiveau(niveau);
     niveau = 1;
     score = 300;
     nbOuvreurs = nbOuvreursInitiaux(niveau);
@@ -16,7 +17,7 @@ function demarrerJeu() {
     _derniereSecondeRestante = -1;
     _niveauEnRestart = false;
     mettreAJourHUD(DUREE_NIVEAU);
-    sonNouveauNiveau();
+    sonAmbiance();
 }
 
 function mettreAJourJeu() {
@@ -44,6 +45,10 @@ function mettreAJourJeu() {
 
     // Mettre à jour le HUD une fois par seconde effective
     if (tempsRestant !== _derniereSecondeRestante) {
+        if (tempsRestant <= 10 && tempsRestant > 0 && _derniereSecondeRestante > 10) {
+            afficherDepeche();
+            sonDepeche();
+        }
         _derniereSecondeRestante = tempsRestant;
         mettreAJourHUD(tempsRestant);
     }
@@ -52,6 +57,7 @@ function mettreAJourJeu() {
     if (tempsRestant === 0) {
         timerActif = false;
         sonTempsEcoule();
+        arreterSonDepeche();
         recommencerNiveau();
     }
 }
@@ -68,6 +74,8 @@ function recommencerNiveau() {
         return;
     }
 
+    afficherTempsEcoule();
+
     setTimeout(async function() {
         nbOuvreurs = nbOuvreursInitiaux(niveau);
         nbFleches = nbFlechesInitiaux(niveau);
@@ -82,15 +90,17 @@ function recommencerNiveau() {
         timerActif = true;
         jeuActif = true;
         mettreAJourHUD(DUREE_NIVEAU);
-        sonNouveauNiveau();
-    }, 2000);
+    }, 0);
 }
 
 function passerNiveauSuivant() {
     if (!jeuActif) return;
     timerActif = false;
     jeuActif = false;
+    arreterSonDepeche();
+    arreterSonAmbiance();
     sonTresorTrouve();
+    sonAmbiance();
 
     var secondesRestantes = Math.max(0, DUREE_NIVEAU - Math.floor(tempsEffectifEcouleMs / 1000));
     score += 10 * secondesRestantes;
@@ -109,18 +119,18 @@ function passerNiveauSuivant() {
         nbTransporteurs = nbTransporteursInitiaux(niveau);
         nbRecepteurs = nbRecepteursInitiaux(niveau);
         initMatrice();
+        objScene3D = await initScene3D(objgl);
+        sonNouveauNiveau();
+        afficherNiveau(niveau);
         joueur = initJoueur();
         angleCamera = -Math.PI / 2;
-        afficherEcranNiveau(niveau);
-        objScene3D = await initScene3D(objgl);
         tempsEffectifEcouleMs = 0;
         dernierTimestampJeu = Date.now();
         _derniereSecondeRestante = -1;
         timerActif = true;
         jeuActif = true;
         mettreAJourHUD(DUREE_NIVEAU);
-        sonNouveauNiveau();
-    }, 2000);
+    }, 1000);
 }
 
 // Retourne true si l'ouvreur a pu être utilisé, false sinon
@@ -137,6 +147,7 @@ function utiliserOuvreur(x, z) {
 
 function activerVueAerienne() {
     if (score < 10) return false;
+    cacherTexte();
     enModeVueAerienne = true;
     tempsDebutVueAerienne = Date.now();
     derniereSecondeVueAerienne = 0;
@@ -151,56 +162,20 @@ function declencherGameOver() {
     jeuActif = false;
     timerActif = false;
     sonGameOver();
-    var timerEl = document.getElementById('hud-timer');
-    if (timerEl) {
-        timerEl.textContent = 'GAME OVER';
-        timerEl.classList.add('urgent');
-    }
+    arreterSonAmbiance();
+    arreterSonDepeche();
+    afficherGameOver();
     console.log("=== GAME OVER === Score final : " + score);
 }
 
 function declencherVictoire() {
     jeuActif = false;
     timerActif = false;
+    arreterSonAmbiance();
+    arreterSonDepeche();
     sonVictoire();
-    var timerEl = document.getElementById('hud-timer');
-    if (timerEl) {
-        timerEl.textContent = 'VICTOIRE!';
-        timerEl.style.color = '#00e676';
-        timerEl.classList.remove('urgent');
-    }
+    afficherVictoire();
     console.log("=== VICTOIRE === Score final : " + score);
 }
 
-function mettreAJourHUD(tempsRestant) {
-    var niveauEl = document.getElementById('hud-niveau');
-    var timerEl = document.getElementById('hud-timer');
-    var scoreEl = document.getElementById('hud-score');
-    var mursEl = document.getElementById('hud-murs');
 
-    if (niveauEl) niveauEl.textContent = 'Niveau ' + niveau;
-    if (scoreEl) scoreEl.textContent = score + ' pts';
-    if (mursEl) mursEl.textContent = nbOuvreurs + ' x';
-
-    if (timerEl) {
-        timerEl.textContent = tempsRestant + 's';
-        if (tempsRestant <= 10) {
-            timerEl.classList.add('urgent');
-        } else {
-            timerEl.classList.remove('urgent');
-        }
-    }
-}
-
-function afficherEcranNiveau(n) {
-    var el = document.getElementById('ecran-niveau');
-    if (!el) return;
-    el.textContent = 'Niveau';
-    el.style.display = 'flex';
-    setTimeout(function() {
-        el.textContent = n;
-        setTimeout(function() {
-            el.style.display = 'none';
-        }, 1000);
-    }, 1000);
-}

@@ -62,14 +62,14 @@ async function initScene3D(objgl) {
           }
           objgl.uniformMatrix4fv(objProgShaders.matProjection, false, _matProjection);
 
-          // Matrice de vue calculée une seule fois par frame (reuses pre-allocated buffer)
+          // Matrice de vue calculée une seule fois par frame (réutilise le buffer pré-alloué _matVue)
           mat4.identity(_matVue);
           mat4.lookAt(getPositionsCameraXYZ(joueur),
             getCiblesCameraXYZ(joueur),
             getOrientationsXYZ(joueur),
             _matVue);
 
-          // Player grid position for distance culling
+          // Position du joueur pour les calculs de distance et d'angle
           var joueurX = getPositionCameraX(joueur);
           var joueurZ = getPositionCameraZ(joueur);
 
@@ -78,7 +78,7 @@ async function initScene3D(objgl) {
               if (obj.binVisible === false) continue;
               if (vueTopDown && obj.estSpecial && !touchesActives[67]) continue;
 
-              // Distance render : Si un cube esttrop loin du joueur, ne pas le dessiner (sauf en vue top-down où on veut tout voir)
+              // Distance render : Si un cube est trop loin du joueur, ne pas le dessiner (sauf en vue top-down où on veut tout voir)
               if (!vueTopDown) {
                   var dx = obj.gridX - joueurX;
                   var dz = obj.gridZ - joueurZ;

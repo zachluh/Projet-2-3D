@@ -65,6 +65,8 @@ function initFleche(fleche, i) {
         let position = trouveCaseVide(matrice, 4);
         console.log("Position de la flèche " + i + ": " + position);
         setPositionsXYZ([position[0], 1.2, position[1]], fleche.transformations);
+        fleche.gridX = position[0];
+        fleche.gridZ = position[1];
         setEchellesXYZ([0.2, 0.2, 0.2], fleche.transformations); // Positionner la flèche au centre de la scène
         orienterFlecheVersPoint(fleche);
         fleche.matModele = mat4.create();
