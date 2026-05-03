@@ -2,13 +2,13 @@ var audioCtx = new AudioContext();
 var buffers = {};
 
 var fichiersSons = {
-    nouveauNiveau: 'sfx/nouveau_niveau.ogg',
-    tresorTrouve:  'sfx/tresor_trouve.ogg',
-    tempsEcoule:   'sfx/temps_ecoule.ogg',
-    murOuvert:     'sfx/mur_ouvert.ogg',
-    teleporte:     'sfx/teleporte.ogg',
-    gameOver:      'sfx/game_over.ogg',
-    victoire:      'sfx/victoire.ogg'
+    nouveauNiveau: 'sfx/nouveau_niveau.mp3',
+    tresorTrouve:  'sfx/tresor_trouve.mp3',
+    tempsEcoule:   'sfx/temps_ecoule.mp3',
+    murOuvert:     'sfx/mur_ouvert.mp3',
+    teleporte:     'sfx/teleporte.mp3',
+    gameOver:      'sfx/game_over.mp3',
+    victoire:      'sfx/victoire.mp3'
 };
 
 async function prechargerSons() {

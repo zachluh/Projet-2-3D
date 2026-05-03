@@ -8,22 +8,22 @@
   <link rel="stylesheet" type="text/css" href="styles.css" /> 
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
    
-  <script type="text/javascript" src="WebGl.js"></script>
-  <script type="text/javascript" src="ShaderCouleursTextures.js"></script>
-  <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
-  <script type="text/javascript" src="Transformations.js"></script>
-  <script type="text/javascript" src="Config.js"></script>
-  <script type="text/javascript" src="Utils.js"></script>
-  <script type="text/javascript" src="Matrice.js"></script>
-  <script type="text/javascript" src="Camera.js"></script>
-  <script type="text/javascript" src="Scene.js"></script>
-  <script type="text/javascript" src="Sound.js"></script>
-  <script type="text/javascript" src="Joueur.js"></script>
-  <script type="text/javascript" src="Tresor.js"></script>
-  <script type="text/javascript" src="Jeu.js"></script>
-  <script type="text/javascript" src="Cubes.js"></script>
-  <script type="module" src="Fleches.js"></script>
-  <script type="module" src="Teleporteurs.js"></script>
+  <script type="text/javascript" src="webgl/WebGl.js"></script>
+  <script type="text/javascript" src="webgl/glMatrix-0.9.5.min.js"></script>
+  <script type="text/javascript" src="webgl/ShaderCouleursTextures.js"></script>
+  <script type="text/javascript" src="utils/Transformations.js"></script>
+  <script type="text/javascript" src="utils/Utils.js"></script>
+  <script type="text/javascript" src="utils/Camera.js"></script>
+  <script type="text/javascript" src="config/Config.js"></script>
+  <script type="text/javascript" src="scene/Matrice.js"></script>
+  <script type="text/javascript" src="scene/Scene.js"></script>
+  <script type="text/javascript" src="jeu/Sound.js"></script>
+  <script type="text/javascript" src="jeu/Joueur.js"></script>
+  <script type="text/javascript" src="scene/Tresor.js"></script>
+  <script type="text/javascript" src="jeu/Jeu.js"></script>
+  <script type="text/javascript" src="scene/Cubes.js"></script>
+  <script type="module" src="scene/Fleches.js"></script>
+  <script type="module" src="scene/Teleporteurs.js"></script>
 
 
  <script type="text/javascript">
@@ -105,6 +105,15 @@
                   var dx = obj.gridX - joueurX;
                   var dz = obj.gridZ - joueurZ;
                   if (dx * dx + dz * dz > _DISTANCE_RENDER_MAX) continue;
+              }
+
+              if (!vueTopDown) {
+                // Culling : Si un cube est complètement derrière le joueur, ne pas le dessiner (sauf en vue top-down où on veut tout voir)
+                var dirX = Math.sin(angleCamera);
+                var dirZ = Math.cos(angleCamera);
+                var toObjX = obj.gridX - joueurX;
+                var toObjZ = obj.gridZ - joueurZ;
+                if (dirX * toObjX + dirZ * toObjZ < 0) continue;
               }
 
               var vertex = obj.vertex;
