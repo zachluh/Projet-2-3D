@@ -24,7 +24,8 @@
         '    void main(void) {\n' +
         '        vec4 texColor = texture2D(uSampler, vTexelPos);\n' +
         '        vec4 couleurFinale = mix(texColor, vec4(1.0 - texColor.rgb, texColor.a), uInverserCouleurs);\n' +
-        '        gl_FragColor = mix(vColor, couleurFinale, uPcTexelColor);\n' +
+        '        vec4 vColorFinale = mix(vColor, vec4(1.0 - vColor.rgb, vColor.a), uInverserCouleurs);\n' +
+        '        gl_FragColor = mix(vColorFinale, couleurFinale, uPcTexelColor);\n' +
         '}\n';
 
      function creerShader(objgl, strSource, strType) {
@@ -35,7 +36,7 @@
         } else if (strType == 'vertex') {
             objShader = objgl.createShader(objgl.VERTEX_SHADER);
         } 
-		
+		 
 		if (!objShader) {
 			alert('Impossible de créer le ' + strType + 'shader');
 		}

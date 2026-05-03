@@ -114,6 +114,17 @@ function initTeleporteur(teleporteur, i) {
 
 function animationTeleporteur() {
     angleTeleporteurs += 5;
+    if (objScene3D) {
+        for (var i = 0; i < objScene3D.tabObjets3D.length; i++) {
+            var obj = objScene3D.tabObjets3D[i];
+            if (!obj.estTeleporteur) continue;
+            mat4.identity(obj.matModele);
+            mat4.translate(obj.matModele, getPositionsXYZ(obj.transformations));
+            mat4.rotateX(obj.matModele, getAngleX(obj.transformations) * Math.PI / 180);
+            mat4.rotateZ(obj.matModele, getAngleTeleporteurs() * Math.PI / 180);
+            mat4.scale(obj.matModele, getEchellesXYZ(obj.transformations));
+        }
+    }
 }
 
 window.initTeleporteurs = initTeleporteurs;

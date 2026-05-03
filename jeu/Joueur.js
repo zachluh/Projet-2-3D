@@ -3,7 +3,7 @@ function initJoueur() {
         setPositionsCameraXYZ([15, 1, 15], joueur);
         setCiblesCameraXYZ([12, 1, 15], joueur);
         setOrientationsXYZ([0, 1, 0], joueur);
-        joueur.vitesse = 0.5;
+        joueur.vitesse = 0.3;
         joueur.vitesseRotation = 0.1; 
         return joueur;
     }
@@ -106,6 +106,7 @@ function positionCollide(x, z) {
     return false;
 }
 
+// Vérifie si le joueur est sur une case de transporteur et le téléporte aléatoirement sur un récepteur
 function verifierCollisionTransporteur() {
     var pos = getPositionJoueurDansMatrice();
     if (matrice[pos[0]][pos[1]] === 6) {
@@ -118,6 +119,7 @@ function verifierCollisionTransporteur() {
     }
 }
 
+// Vérifie si le joueur est proche du trésor et le collecte s'il l'est
 function verifierCollisionTresor() {
     if (tresorCollecte || !positionTresor) return;
 
