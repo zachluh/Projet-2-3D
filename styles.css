@@ -97,4 +97,21 @@ A:hover IMG { border-style:double; border-width:2px; border-color:Green;}
     color: #ff4444;
 }
 
+#ecran-niveau {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1080px;
+    height: 720px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 48px;
+    color: #ff2222;
+    pointer-events: none;
+    text-align: center;
+    box-sizing: border-box;
+}
+
 

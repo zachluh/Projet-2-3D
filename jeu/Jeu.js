@@ -111,6 +111,7 @@ function passerNiveauSuivant() {
         initMatrice();
         joueur = initJoueur();
         angleCamera = -Math.PI / 2;
+        afficherEcranNiveau(niveau);
         objScene3D = await initScene3D(objgl);
         tempsEffectifEcouleMs = 0;
         dernierTimestampJeu = Date.now();
@@ -189,4 +190,17 @@ function mettreAJourHUD(tempsRestant) {
             timerEl.classList.remove('urgent');
         }
     }
+}
+
+function afficherEcranNiveau(n) {
+    var el = document.getElementById('ecran-niveau');
+    if (!el) return;
+    el.textContent = 'Niveau';
+    el.style.display = 'flex';
+    setTimeout(function() {
+        el.textContent = n;
+        setTimeout(function() {
+            el.style.display = 'none';
+        }, 1000);
+    }, 1000);
 }
