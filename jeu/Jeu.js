@@ -143,7 +143,7 @@ function passerNiveauSuivant() {
         timerActif = true;
         jeuActif = true;
         mettreAJourHUD(DUREE_NIVEAU);
-    }, 1000);
+    }, 500);
 }
 
 // Retourne true si l'ouvreur a pu être utilisé, false sinon
