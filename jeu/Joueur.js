@@ -9,8 +9,8 @@ function initJoueur() {
         setPositionsCameraXYZ([15, 1, 15], joueur);
         setCiblesCameraXYZ([12, 1, 15], joueur);
         setOrientationsXYZ([0, 1, 0], joueur);
-        joueur.vitesse = 0.3;
-        joueur.vitesseRotation = 0.1; 
+        joueur.vitesse = 0.07;
+        joueur.vitesseRotation = 0.07; 
         return joueur;
     }
 

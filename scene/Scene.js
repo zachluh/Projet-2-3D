@@ -20,8 +20,8 @@ async function initScene3D(objgl) {
     texCubes[6] = texCubes[0]; texCubes[7] = texCubes[0];
 
     // Skybox texturée (rendue en premier pour apparaître derrière tout le reste)
-    var texSkyHaut = chargerTexture(objgl, 'textures/skybox_haut.jpg');
-    var texSkyCote = chargerTexture(objgl, 'textures/skybox_cote.jpg');
+    var texSkyHaut = chargerTexture(objgl, 'textures/skybox_haut.png');
+    var texSkyCote = chargerTexture(objgl, 'textures/skybox_cote.png');
     var skyboxObjets = creerSkybox(objgl, texSkyHaut, texSkyCote);
     for (var s = 0; s < skyboxObjets.length; s++) tabObjets3D.push(skyboxObjets[s]);
 
@@ -67,6 +67,7 @@ if (jeuActif) miseAJourPositionJoueur();
 verifierCollisionTresor();
 verifierCollisionTransporteur();
 animationTeleporteur();
+animerTresor();
 effacerCanevas(objgl);
 dessiner();
 }
@@ -100,13 +101,13 @@ function dessiner() {
         if (vueTopDown && obj.estSpecial && !touchesActives[67]) continue;
 
         // Distance render : Si un cube est trop loin du joueur, ne pas le dessiner (sauf en vue top-down où on veut tout voir)
-        if (!vueTopDown) {
+        if (!vueTopDown && !obj.estSkybox) {
             var dx = obj.gridX - joueurX;
             var dz = obj.gridZ - joueurZ;
             if (dx * dx + dz * dz > _DISTANCE_RENDER_MAX) continue;
         }
 
-        if (!vueTopDown) {
+        if (!vueTopDown && !obj.estSkybox) {
         // Si un cube est complètement derrière le joueur, ne pas le dessiner (sauf en vue top-down où on veut tout voir)
             var dirX = Math.sin(angleCamera);
             var dirZ = Math.cos(angleCamera);
@@ -188,14 +189,13 @@ function dessiner() {
                     // Relier les vertex aux shaders
                     objgl.bindBuffer(objgl.ARRAY_BUFFER, vertex[j]);
                     objgl.vertexAttribPointer(objProgShaders.posVertex, 3, objgl.FLOAT, false, 0, 0);
-                    var intNbVertex = (objgl.getBufferParameter(objgl.ARRAY_BUFFER, objgl.BUFFER_SIZE) / 4) / 3;
 
                     // Relier les couleurs aux shaders
                     objgl.bindBuffer(objgl.ARRAY_BUFFER, couleurs[j]);
                     objgl.vertexAttribPointer(objProgShaders.couleurVertex, 4, objgl.FLOAT, false, 0, 0);
 
                     // Dessiner
-                    objgl.drawArrays(vertex[j].typeDessin, 0, intNbVertex);
+                    objgl.drawArrays(vertex[j].typeDessin, 0, vertex[j].intNbVertex);
                 }
         else { // Dessiner le maillage
             // Relier les vertex aux shaders

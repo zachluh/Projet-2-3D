@@ -104,76 +104,20 @@ function creerCube(objgl) {
 }
 
 function creerCouleurs(objgl, type) {
-    var tabCouleurs = new Array();
-    var couleur = [0.0, 0.0, 0.0, 1.0];
+    var couleur = (type === 3) ? [1.0, 0.0, 0.0, 1.0] : [1.0, 1.0, 1.0, 1.0];
+    var noir = [0.0, 0.0, 0.0, 1.0];
 
+    // Faces 0-5 : 6 sommets chacune ; contours 6-7 : 4 sommets ; arêtes 8 : 8 sommets
+    var vertexCounts = [6, 6, 6, 6, 6, 6, 4, 4, 8];
 
-    switch (type) {
-    case 0:
-        couleur = [1.0, 1.0, 1.0, 1.0]; // Blanc
-        break;
-    case 1: // Couleurs face avant pleine
-        couleur = [1.0, 1.0, 1.0, 1.0]; // Blanc
-        break;
-    case 2 || 6 || 7: 
-        couleur = [1.0, 1.0, 1.0, 1.0]; // Noir
-        break;
-    case 3: 
-        couleur = [1.0, 0.0, 0.0, 1.0]; // Red
-        break;
-    default:
-        couleur = [1.0, 1.0, 1.0, 1.0]; // Noir
-        break;
-            
-    }
-
-    tabCouleurs[0] = []; // Blanc 
-    for (var i = 0; i < 6; i++)
-        tabCouleurs[0] = tabCouleurs[0].concat(couleur); // Rouge
-
-    // Couleurs face arrière pleine
-    tabCouleurs[1] = []; // Blanc
-    for (var i = 0; i < 6; i++)
-        tabCouleurs[1] = tabCouleurs[1].concat(couleur); // Vert
-
-    // Couleurs face du dessus
-    tabCouleurs[2] = []; // Blanc
-    for (var i = 0; i < 6; i++)
-        tabCouleurs[2] = tabCouleurs[2].concat(couleur); // Bleu
-
-    // Couleurs face du dessous
-    tabCouleurs[3] = []; // Blanc
-    for (var i = 0; i < 6; i++)
-        tabCouleurs[3] = tabCouleurs[3].concat(couleur); // Cyan
-
-    // Couleurs face de droite
-    tabCouleurs[4] = []; // Blanc
-    for (var i = 0; i < 6; i++)
-        tabCouleurs[4] = tabCouleurs[4].concat(couleur); // Magenta
-
-    // Couleurs face de gauche
-    tabCouleurs[5] = []; // Blanc
-    for (var i = 0; i < 6; i++)
-        tabCouleurs[5] = tabCouleurs[5].concat(couleur); // Jaune
-
-    // Couleurs contour avant
-    tabCouleurs[6] = [];
-    for (var i = 0; i < 4; i++)
-        tabCouleurs[6] = tabCouleurs[6].concat([0.0, 0.0, 0.0, 1.0]); // Noir
-
-    // Couleurs contour arrière
-    tabCouleurs[7] = tabCouleurs[6];
-
-    // Couleurs droites reliées aux 2 faces
-    tabCouleurs[8] = tabCouleurs[6].concat(tabCouleurs[6]);
-
-    // Création des tampons
     var tabObjCouleursCube = new Array();
     for (var i = 0; i < 9; i++) {
+        var base = (i < 6) ? couleur : noir;
+        var data = [];
+        for (var k = 0; k < vertexCounts[i]; k++) data = data.concat(base);
         tabObjCouleursCube[i] = objgl.createBuffer();
         objgl.bindBuffer(objgl.ARRAY_BUFFER, tabObjCouleursCube[i]);
-        objgl.bufferData(objgl.ARRAY_BUFFER, new Float32Array(tabCouleurs[i]), objgl.STATIC_DRAW);
-
+        objgl.bufferData(objgl.ARRAY_BUFFER, new Float32Array(data), objgl.STATIC_DRAW);
     }
     return tabObjCouleursCube;
 }
@@ -204,9 +148,9 @@ function initCubes(objgl, texCubes) {
             var objet3D = new Object();
             var type = matrice[i][j];
             objet3D.vertex            = creerCube(objgl);
-            objet3D.uvCoords          = creerUVsCube(objgl);
+            objet3D.couleurs           = creerCouleurs(objgl, type);
             objet3D.texture           = texCubes[type] || texCubes[0];
-            objet3D.estTextureeArrays = true;
+            objet3D.estTextureeArrays = false;
             objet3D.maillage          = null;
             objet3D.transformations   = creerTransformations();
             var y = (type === 1 || type === 2) ? 1 : 0;
