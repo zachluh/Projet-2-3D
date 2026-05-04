@@ -40,7 +40,7 @@ function arreterSon(nom) {
 }
 
 // Fonctions de lecture de sons spécifiques
-function sonNouveauNiveau() { jouerSon('nouveauNiveau', 4.7); }
+function sonNouveauNiveau() { jouerSon('nouveauNiveau', 2.3); }
 function sonTresorTrouve()  { jouerSon('tresorTrouve');  }
 function sonTempsEcoule()   { jouerSon('tempsEcoule');   }
 function sonMurOuvert()     { jouerSon('murOuvert');     }

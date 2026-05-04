@@ -44,13 +44,10 @@ function afficherNiveau(n) {
     el.style.backgroundColor = 'transparent';
     el.style.color = '#fc1303';
     el.style.fontSize = '48px';
-    el.textContent = 'Niveau';
+    el.textContent = 'Niveau ' + n;
     el.style.display = 'flex';
     setTimeout(function() {
-        el.textContent = n;
-        setTimeout(function() {
-            el.style.display = 'none';  
-        }, 2000);
+        el.style.display = 'none';  
     }, 2000);
 }
 
