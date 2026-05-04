@@ -17,7 +17,6 @@ function demarrerJeu() {
     _derniereSecondeRestante = -1;
     _niveauEnRestart = false;
     mettreAJourHUD(DUREE_NIVEAU);
-    sonAmbiance();
 }
 
 function mettreAJourJeu() {
@@ -62,6 +61,7 @@ function mettreAJourJeu() {
     }
 }
 
+// Recommence le niveau actuel : réinitialise le joueur, les compteurs et affiche le message de temps écoulé
 function recommencerNiveau() {
     if (_niveauEnRestart) return;
     _niveauEnRestart = true;
@@ -77,12 +77,17 @@ function recommencerNiveau() {
     afficherTempsEcoule();
 
     setTimeout(async function() {
+
+        // Réinitialiser les variables du niveau
         nbOuvreurs = nbOuvreursInitiaux(niveau);
         nbFleches = nbFlechesInitiaux(niveau);
         nbTransporteurs = nbTransporteursInitiaux(niveau);
+
+        // Réinitialiser le joueur
         joueur = initJoueur();
         angleCamera = -Math.PI / 2;
-        // Les objets gardent leurs positions, seul le joueur et le timer sont remis à zéro
+
+        // Réinitialiser le compteur de temps
         tempsEffectifEcouleMs = 0;
         dernierTimestampJeu = Date.now();
         _derniereSecondeRestante = -1;
@@ -90,6 +95,9 @@ function recommencerNiveau() {
         timerActif = true;
         jeuActif = true;
         mettreAJourHUD(DUREE_NIVEAU);
+        
+        // La scène n'est pas réinitialisée car elle reste la même
+
     }, 0);
 }
 
@@ -97,10 +105,10 @@ function passerNiveauSuivant() {
     if (!jeuActif) return;
     timerActif = false;
     jeuActif = false;
+
+    // Arrêter les sons d'ambiance et de dépêche, jouer le son de trésor trouvé, puis relancer l'ambiance
     arreterSonDepeche();
-    arreterSonAmbiance();
     sonTresorTrouve();
-    sonAmbiance();
 
     var secondesRestantes = Math.max(0, DUREE_NIVEAU - Math.floor(tempsEffectifEcouleMs / 1000));
     score += 10 * secondesRestantes;
@@ -145,6 +153,7 @@ function utiliserOuvreur(x, z) {
     return true;
 }
 
+// Active la vue aérienne si le score est suffisant
 function activerVueAerienne() {
     if (score < 10) return false;
     cacherTexte();
@@ -154,24 +163,25 @@ function activerVueAerienne() {
     return true;
 }
 
+// Désactive la vue aérienne et retourne à la position précédente du joueur
 function desactiverVueAerienne() {
     enModeVueAerienne = false;
 }
 
+// Déclenche le game over : arrête le jeu, affiche le message de fin et joue le son de game over
 function declencherGameOver() {
     jeuActif = false;
     timerActif = false;
     sonGameOver();
-    arreterSonAmbiance();
     arreterSonDepeche();
     afficherGameOver();
     console.log("=== GAME OVER === Score final : " + score);
 }
 
+// Déclenche la victoire : arrête le jeu, affiche le message de victoire et joue le son de victoire
 function declencherVictoire() {
     jeuActif = false;
     timerActif = false;
-    arreterSonAmbiance();
     arreterSonDepeche();
     sonVictoire();
     afficherVictoire();

@@ -1,4 +1,15 @@
+// ----- MATRICE DE LA SCENE -----
 
+/**
+ * 0 : plancher
+ * 1 : mur ouvrable
+ * 2 : mur indestructible
+ * 3 : plancher du spawn
+ * 4 : trésor
+ * 5 : flèche
+ * 6 : transporteur
+ * 7 : récepteur 
+ */
 
 let ligne1 = new Array(31).fill(2);
 let ligne2 =  [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2];
@@ -31,7 +42,6 @@ let ligne28 = [2, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
 let ligne29 = [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2];
 let ligne31 = new Array(31).fill(2);
 
-var matrice = null
 initMatrice = function() {
     matrice = [ligne1, ligne2, ligne3, ligne4, ligne5, ligne6, ligne7, ligne8, ligne9, ligne10, ligne11, ligne12, ligne13, ligne14, ligne15, ligne16, ligne17, ligne18, ligne19, ligne20, ligne21, ligne22, ligne23, ligne24, ligne25, ligne26, ligne27, ligne28, ligne29,ligne31].map(row => row.slice());
 }

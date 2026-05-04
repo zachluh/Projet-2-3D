@@ -1,8 +1,10 @@
+// Cache l'écran "Pesez une touch pour commencer"
 function fermerPressStart() {
     var el = document.getElementById('ecran-text');
     if (el) el.style.display = 'none';
 }
 
+// Affiche l'écran "Game Over"
 function afficherGameOver() {
     var el = document.getElementById('ecran-text');
     if (!el) return;
@@ -14,6 +16,7 @@ function afficherGameOver() {
     el.style.display = 'flex';
 }
 
+// Affiche l'écran de victoire
 function afficherVictoire() {
     var el = document.getElementById('ecran-text');
     if (!el) return;
@@ -25,6 +28,8 @@ function afficherVictoire() {
     el.style.display = 'flex';
 }
 
+
+// Affiche le numéro du niveau au début de chaque niveau
 function afficherNiveau(n) {
     var el = document.getElementById('ecran-text');
     if (!el) return;
@@ -43,6 +48,8 @@ function afficherNiveau(n) {
     }, 2000);
 }
 
+
+// Affiche un message de "Temps écoulé" lorsque le temps est écoulé sans que le joueur trouve le trésor
 function afficherTempsEcoule() {
     var el = document.getElementById('ecran-text');
     if (!el) return;
@@ -57,6 +64,7 @@ function afficherTempsEcoule() {
     }, 1000);
 }
 
+//Affiche le message "Dépêche toi" en clignotant lorsque le temps restant est inférieur ou égal à 10 secondes
 function afficherDepeche() {
     var el = document.getElementById('ecran-text');
     if (!el) return;
@@ -69,6 +77,7 @@ function afficherDepeche() {
     el.style.display = 'flex';
 }
 
+// Met à jour les éléments du HUD (niveau, timer, score, murs restants) en fonction de l'état actuel du jeu
 function mettreAJourHUD(tempsRestant) {
     var niveauEl = document.getElementById('hud-niveau');
     var timerEl = document.getElementById('hud-timer');
@@ -89,6 +98,7 @@ function mettreAJourHUD(tempsRestant) {
     }
 }
 
+// Cache l'écran de texte (invoqué lorsque l'utilisateur affiche la vue aérienne)
 function cacherTexte() {
     var el = document.getElementById('ecran-text');
     if (el) el.style.display = 'none';

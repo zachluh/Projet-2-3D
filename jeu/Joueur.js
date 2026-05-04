@@ -1,3 +1,4 @@
+// Initialisation du joueur : position, cible et orientation de la caméra, ainsi que les vitesses de déplacement et de rotation
 function initJoueur() {
         var joueur = creerCamera();
         setPositionsCameraXYZ([15, 1, 15], joueur);
@@ -8,6 +9,7 @@ function initJoueur() {
         return joueur;
     }
 
+// Ajoute les touches de mouvement à la liste de touches actives. Pour touches à une seule action, la fonction correspondante est appelée directement
 function enfoncerTouche(event) {
     if (!event) return;
     event.preventDefault();
@@ -136,7 +138,7 @@ function verifierCollisionTresor() {
 }
 
 
-    
+// Met à jour la position du joueur en fonction des touches actives, en vérifiant les collisions avec les murs. Appelée à chaque frame
 function miseAJourPositionJoueur() {
     if (vueTopDown) return;
 
@@ -144,39 +146,44 @@ function miseAJourPositionJoueur() {
     var vitesseRotation = joueur.vitesseRotation;
     camera = objScene3D.camera;
 
-    //console.log("Touches actives : " + JSON.stringify(touchesActives));
-
+    //Position actuelle du joueur dans la matrice
     var posX = getPositionCameraX(joueur);
     var posZ = getPositionCameraZ(joueur);
 
-
+    // Direction vers laquelle le joueur regarde, calculée à partir de l'angle de la caméra
     var dirX = Math.sin(angleCamera);
     var dirZ = Math.cos(angleCamera);
 
-    if (touchesActives[37]) {// Flèche gauche — tourner à gauche
+    // Flèche gauche — tourner à gauche
+    if (touchesActives[37]) {
         angleCamera += vitesseRotation;
     }
-    if (touchesActives[39]) {// Flèche droite — tourner à droite
+
+    // Flèche droite — tourner à droite
+    if (touchesActives[39]) {
         angleCamera -= vitesseRotation;
     }
-    if (touchesActives[38]) {// Flèche haut — avancer dans la direction visée
+
+    // Flèche haut — Avancer
+    if (touchesActives[38]) {
         if (!positionCollide(posX + dirX * vitesse, posZ)) posX += dirX * vitesse;
         if (!positionCollide(posX, posZ + dirZ * vitesse)) posZ += dirZ * vitesse;
         setPositionCameraX(posX, joueur);
         setPositionCameraZ(posZ, joueur);
     }
-    if (touchesActives[40]) {// Flèche bas — reculer
+
+    // Flèche bas — Reculer
+    if (touchesActives[40]) {
         if (!positionCollide(posX - dirX * vitesse, posZ)) posX -= dirX * vitesse;
         if (!positionCollide(posX, posZ - dirZ * vitesse)) posZ -= dirZ * vitesse;
         setPositionCameraX(posX, joueur);
         setPositionCameraZ(posZ, joueur);
     }
 
-    setCibleCameraX(posX + Math.sin(angleCamera), joueur);
-    setCibleCameraZ(posZ + Math.cos(angleCamera), joueur);
 
-    //console.log("Position de la caméra : " + getPositionsCameraXYZ(joueur));
-    //console.log("Angle : " + angleCamera);
+    // Mettre à jour la cible de la caméra pour qu'elle regarde toujours dans la direction du mouvement
+    setCibleCameraX(posX + Math.sin(angleCamera), joueur);
+    setCibleCameraZ(posZ + Math.cos(angleCamera), joueur); 
 
 }
 

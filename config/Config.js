@@ -6,12 +6,15 @@ var objgl = null;
 var objProgShaders = null;
 var objScene3D = null;
 
-// Matrices ré-allocalisées comme ça ils ne sont pas recréées à chaque frame 
-var _matProjection = null;// on compute ça une seule fois car elle ne change jamais
+// Variables de la matrice
+var matrice = null
+
+// Matrices pré-allocalisées comme ça ils ne sont pas recréées à chaque frame 
+var _matProjection = null;
 var _matVue = mat4.create();
 var _matModeleVue = mat4.create();
 
-// Distance² beyond which maze cubes are culled (12 units radius)
+// Distance² après laquelle un cube ne sera pas dessiné (pour optimiser le rendu)
 var _DISTANCE_RENDER_MAX = 12 * 12;
 
 // Variables de la scène
@@ -74,3 +77,21 @@ let angleTeleporteurs = 0;
 
 var positionTresor = null;
 var tresorCollecte = false;
+
+// Variables de son
+
+var audioCtx = new AudioContext();
+var buffers = {};
+
+var fichiersSons = {
+    nouveauNiveau: 'sfx/nouveau_niveau.mp3',
+    tresorTrouve:  'sfx/tresor_trouve.mp3',
+    tempsEcoule:   'sfx/temps_ecoule.mp3',
+    murOuvert:     'sfx/mur_ouvert.mp3',
+    teleporte:     'sfx/teleporte.mp3',
+    gameOver:      'sfx/game_over.mp3',
+    victoire:      'sfx/victoire.mp3',
+    depeche:       'sfx/depeche.mp3',
+};
+
+var sourcesActives = {};
