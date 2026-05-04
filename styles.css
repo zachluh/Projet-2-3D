@@ -119,4 +119,31 @@ A:hover IMG { border-style:double; border-width:2px; border-color:Green;}
     font-size: 13px;
 }
 
+#crosshair {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1080px;
+    height: 720px;
+    pointer-events: none;
+}
+#crosshair::before,
+#crosshair::after {
+    content: '';
+    position: absolute;
+    background: rgba(255, 255, 255, 0.85);
+    top: 50%;
+    left: 50%;
+}
+#crosshair::before {
+    width: 20px;
+    height: 2px;
+    transform: translate(-50%, -50%);
+}
+#crosshair::after {
+    width: 2px;
+    height: 20px;
+    transform: translate(-50%, -50%);
+}
+
 

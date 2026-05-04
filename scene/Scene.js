@@ -9,8 +9,24 @@ async function initScene3D(objgl) {
     var objScene3D = new Object();
     tabObjets3D = new Array(); // Vider le tableau des objets 3D avant de les réinitialiser
 
-    //Initaliser les cubes (plancher, murs, etc.)
-    initCubes(objgl);
+    // Charger les textures des cubes (une par type de case)
+    var texCubes = {};
+    texSol = chargerTexture(objgl, 'textures/sol.jpg');
+    texCubes[0] = texSol;
+    texCubes[1] = chargerTexture(objgl, 'textures/mur_ouvrable.jpg');
+    texCubes[2] = chargerTexture(objgl, 'textures/mur.jpg');
+    texCubes[3] = chargerTexture(objgl, 'textures/enclos.jpg');
+    texCubes[4] = texCubes[0]; texCubes[5] = texCubes[0];
+    texCubes[6] = texCubes[0]; texCubes[7] = texCubes[0];
+
+    // Skybox texturée (rendue en premier pour apparaître derrière tout le reste)
+    var texSkyHaut = chargerTexture(objgl, 'textures/skybox_haut.jpg');
+    var texSkyCote = chargerTexture(objgl, 'textures/skybox_cote.jpg');
+    var skyboxObjets = creerSkybox(objgl, texSkyHaut, texSkyCote);
+    for (var s = 0; s < skyboxObjets.length; s++) tabObjets3D.push(skyboxObjets[s]);
+
+    // Initialiser les cubes texturés (plancher, murs, etc.)
+    initCubes(objgl, texCubes);
     
     // Initialiser le trésor
     initTresor(objgl);
@@ -113,7 +129,27 @@ function dessiner() {
         // Relier la matrice aux shaders
         objgl.uniformMatrix4fv(objProgShaders.matModeleVue, false, _matModeleVue);
 
-        if (estTexturee) {
+        if (obj.estTextureeArrays) {
+            // Cubes et skybox : texture sur drawArrays (6 faces max, contours ignorés)
+            objgl.enableVertexAttribArray(objProgShaders.posTexel);
+            objgl.disableVertexAttribArray(objProgShaders.couleurVertex);
+            objgl.activeTexture(objgl.TEXTURE0);
+            objgl.bindTexture(objgl.TEXTURE_2D, obj.texture);
+            objgl.uniform1i(objProgShaders.noTexture, 0);
+            objgl.uniform1f(objProgShaders.pcCouleurTexel, 1.0);
+            objgl.uniform1f(objProgShaders.inverserCouleurs, 0.0);
+            var nbFaces = Math.min(6, obj.vertex.length);
+            for (var j = 0; j < nbFaces; j++) {
+                objgl.bindBuffer(objgl.ARRAY_BUFFER, obj.vertex[j]);
+                objgl.vertexAttribPointer(objProgShaders.posVertex, 3, objgl.FLOAT, false, 0, 0);
+                objgl.bindBuffer(objgl.ARRAY_BUFFER, obj.uvCoords[j]);
+                objgl.vertexAttribPointer(objProgShaders.posTexel, 2, objgl.FLOAT, false, 0, 0);
+                objgl.drawArrays(obj.vertex[j].typeDessin, 0, obj.vertex[j].intNbVertex);
+            }
+            objgl.disableVertexAttribArray(objProgShaders.posTexel);
+            objgl.enableVertexAttribArray(objProgShaders.couleurVertex);
+            objgl.uniform1f(objProgShaders.pcCouleurTexel, 0.0);
+        } else if (estTexturee) {
             // Relier les vertex aux shaders
             objgl.bindBuffer(objgl.ARRAY_BUFFER, vertex);
             objgl.vertexAttribPointer(objProgShaders.posVertex, 3, objgl.FLOAT, false, 0, 0);

@@ -27,6 +27,8 @@ var _DISTANCE_RENDER_MAX = 12 * 12;
 // Variables de la scène
 
 var tabObjets3D = new Array();
+var cubesMatrice = [];  // cubesMatrice[i][j] → objet3D du cube à la case (i,j)
+var texSol = null;      // texture du sol, utilisée quand un mur est ouvert
 
 // Variables du joueur
 

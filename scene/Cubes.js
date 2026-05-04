@@ -96,7 +96,8 @@ function creerCube(objgl) {
         tabObjCube[i] = objgl.createBuffer();
         objgl.bindBuffer(objgl.ARRAY_BUFFER, tabObjCube[i]);
         objgl.bufferData(objgl.ARRAY_BUFFER, new Float32Array(tabVertex[i]), objgl.STATIC_DRAW);
-        tabObjCube[i].typeDessin = (i < 6) ? objgl.TRIANGLE_FAN : ((i < 8) ? objgl.LINE_LOOP : objgl.LINES);
+        tabObjCube[i].typeDessin  = (i < 6) ? objgl.TRIANGLE_FAN : ((i < 8) ? objgl.LINE_LOOP : objgl.LINES);
+        tabObjCube[i].intNbVertex = tabVertex[i].length / 3;
     }
 
     return tabObjCube;
@@ -177,21 +178,45 @@ function creerCouleurs(objgl, type) {
     return tabObjCouleursCube;
 }
 
-function initCubes(objgl) {
+// UV pour une face TRIANGLE_FAN à 6 sommets : centre(0.5,0.5), TR, TL, BL, BR, TR (fermeture)
+var _uvFaceCube = new Float32Array([
+    0.5, 0.5,
+    1.0, 0.0,
+    0.0, 0.0,
+    0.0, 1.0,
+    1.0, 1.0,
+    1.0, 0.0
+]);
+
+// Un seul tampon UV partagé entre les 6 faces (données identiques)
+function creerUVsCube(objgl) {
+    var uvBuffer = objgl.createBuffer();
+    objgl.bindBuffer(objgl.ARRAY_BUFFER, uvBuffer);
+    objgl.bufferData(objgl.ARRAY_BUFFER, _uvFaceCube, objgl.STATIC_DRAW);
+    return [uvBuffer, uvBuffer, uvBuffer, uvBuffer, uvBuffer, uvBuffer];
+}
+
+function initCubes(objgl, texCubes) {
+    cubesMatrice = []; // réinitialiser le tableau de référence
     for (var i = 0; i < matrice.length; i++) {
+        cubesMatrice[i] = [];
         for (var j = 0; j < matrice[i].length; j++) {
             var objet3D = new Object();
-            objet3D.vertex = creerCube(objgl);
-            objet3D.couleurs = creerCouleurs(objgl, matrice[i][j]);
-            objet3D.maillage = null;
-            objet3D.transformations = creerTransformations();
-            var y = matrice[i][j] == 1 || matrice[i][j] == 2 ? 1 : 0; 
+            var type = matrice[i][j];
+            objet3D.vertex            = creerCube(objgl);
+            objet3D.uvCoords          = creerUVsCube(objgl);
+            objet3D.texture           = texCubes[type] || texCubes[0];
+            objet3D.estTextureeArrays = true;
+            objet3D.maillage          = null;
+            objet3D.transformations   = creerTransformations();
+            var y = (type === 1 || type === 2) ? 1 : 0;
             setPositionsXYZ([i, y, j], objet3D.transformations);
             objet3D.matModele = mat4.create();
             mat4.identity(objet3D.matModele);
             mat4.translate(objet3D.matModele, getPositionsXYZ(objet3D.transformations));
             objet3D.gridX = i;
             objet3D.gridZ = j;
+            cubesMatrice[i][j] = objet3D;
             tabObjets3D.push(objet3D);
         }
     }

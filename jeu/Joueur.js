@@ -64,13 +64,10 @@ function enfoncerTouche(event) {
             var nextZ = Math.round(pos[1] + dirZ);
             if (utiliserOuvreur(nextX, nextZ)) {
                 matrice[nextX][nextZ] = 0;
-
-                var idx = nextX * matrice[0].length + nextZ;
-                var obj = objScene3D.tabObjets3D[idx];
+                var obj = cubesMatrice[nextX][nextZ];
+                obj.texture = texSol;
                 mat4.identity(obj.matModele);
                 mat4.translate(obj.matModele, [nextX, 0, nextZ]);
-
-                console.log("Mur devant ouvert en (" + nextX + ", " + nextZ + ")");
             }
         
     }
