@@ -1,3 +1,8 @@
+/** --- Sound.js ---
+ * Ce fichier contient la logique liée aux sons du jeu : préchargement, lecture, arrêt, etc.
+ * @author Ken-Li Roux
+*/
+
 // Précharge les sons du jeu et les stocke dans des buffers pour une lecture rapide
 async function prechargerSons() {
     for (var nom in fichiersSons) {
@@ -37,7 +42,7 @@ function arreterSon(nom) {
 // Fonctions de lecture de sons spécifiques
 function sonNouveauNiveau() { jouerSon('nouveauNiveau', 4.7); }
 function sonTresorTrouve()  { jouerSon('tresorTrouve');  }
-function sonTempsEcoule()   { jouerSon('tempsEcoule', 2.7);   }
+function sonTempsEcoule()   { jouerSon('tempsEcoule');   }
 function sonMurOuvert()     { jouerSon('murOuvert');     }
 function sonTeleporte()     { jouerSon('teleporte');     }
 function sonGameOver()      { jouerSon('gameOver');      }

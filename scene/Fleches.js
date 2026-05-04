@@ -1,3 +1,8 @@
+/** --- Fleches.js ---
+ * Ce fichier contient la logique liée à la création et à la gestion des flèches dans la scène 3D.
+ * @author Zachary Luheshi
+ */
+
 import { WebIO } from 'https://cdn.jsdelivr.net/npm/@gltf-transform/core/+esm';
 
 // Crée une liste de flèches à partir du modèle 3D de la flèche
@@ -23,7 +28,7 @@ async function initFleches() {
     return fleches;
 }
 
-
+// Crée un objet 3D pour une flèche à partir de ses positions et indices
 function creerFleche(objgl, positionsArray, indicesArray) {
     var objet3D = new Object();
 

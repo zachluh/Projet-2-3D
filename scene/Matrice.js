@@ -1,3 +1,8 @@
+/** --- Matrice.js ---
+ * Ce fichier contient la matrice de la scène 3D, qui définit la disposition des éléments du niveau dans la scène
+ * @author Zachary Luheshi
+ */
+
 // ----- MATRICE DE LA SCENE -----
 
 /**

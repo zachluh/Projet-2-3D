@@ -1,3 +1,8 @@
+/** --- Teleporteurs.js ---
+ * Ce fichier contient la logique liée à la création et à la gestion des téléporteurs dans la scène 3D.
+ * @author Zachary Luheshi
+ */
+
 import { WebIO } from 'https://cdn.jsdelivr.net/npm/@gltf-transform/core/+esm';
 
 // Crée une liste de téléporteurs à partir du modèle 3D du téléporteur et centre le pivot de l'objet pour faciliter les rotations et positionnements
@@ -48,6 +53,7 @@ async function initTeleporteurs() {
     return teleporteurs;
 }
 
+// Crée un objet 3D pour un téléporteur à partir de ses positions, coordonnées de texture, indices et source d'image pour la texture
 function creerTeleporter(objgl, positions, texCoords, indices, imageSrc) {
     var objet3D = new Object();
 

@@ -1,6 +1,12 @@
+/** --- Text.js --- 
+ * Ce fichier contient la logique liée à l'affichage de textes à l'écran : écrans de début et de fin, messages de victoire et de défaite, affichage du HUD, etc.
+ * @author Zachary Luheshi
+*/
+
+
 // Cache l'écran "Pesez une touch pour commencer"
 function fermerPressStart() {
-    var el = document.getElementById('ecran-text');
+    var el = document.getElementById('ecran-press-start');
     if (el) el.style.display = 'none';
 }
 

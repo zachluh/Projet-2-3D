@@ -1,3 +1,8 @@
+/** --- Jeu.js ---
+ * Ce fichier continent la logique principale du jeu : démarrage, niveaux, timer, score, conditions de victoire et de défaite, etc.
+ * @author Ken-Li Roux, Zachary Luheshi
+ */
+
 
 function demarrerJeu() {
     sonNouveauNiveau();
@@ -106,7 +111,7 @@ function passerNiveauSuivant() {
     timerActif = false;
     jeuActif = false;
 
-    // Arrêter les sons d'ambiance et de dépêche, jouer le son de trésor trouvé, puis relancer l'ambiance
+    // Arrêter le son depeche s'il est en train de jouer, puis jouer le son de trésor trouvé
     arreterSonDepeche();
     sonTresorTrouve();
 

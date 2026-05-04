@@ -1,7 +1,10 @@
+/** --- Tresor.js ---
+ * Ce fichier contient la logique liée à la création et à la gestion du trésor dans la scène 3D.
+ * @author Ken-Li Roux
+ */
 
 
-
-// Hardcoded treasure chest vertexes (no variables!)
+// Creer les vertex du trésor : 10 faces (corps, couvercle, coutures et dessus du couvercle)
 function creerVertexTresor(objgl) {
     var tabVertex = [
         [ 0.0,   0.15,  0.35,   0.35,  0.3,  0.35,  -0.35,  0.3,  0.35,  -0.35, 0.0,  0.35,   0.35, 0.0,  0.35,   0.35,  0.3,  0.35 ],
@@ -27,11 +30,12 @@ function creerVertexTresor(objgl) {
     return tabObjTresor;
 }
 
+// Crée les couleurs du trésor : différentes couleurs pour le corps, le couvercle, les coutures et le dessus du couvercle
 function creerCouleursTresor(objgl) {
-    var corpsC      = [0.55, 0.27, 0.07, 1.0]; // saddlebrown
-    var couvC       = [0.36, 0.18, 0.05, 1.0]; // dark brown
-    var seamC       = [0.85, 0.65, 0.13, 1.0]; // gold seam
-    var lidTopC     = [0.72, 0.53, 0.04, 1.0]; // gold lid
+    var corpsC      = [0.55, 0.27, 0.07, 1.0]; // brun
+    var couvC       = [0.36, 0.18, 0.05, 1.0]; // brun foncé
+    var seamC       = [0.85, 0.65, 0.13, 1.0]; // couture dorée
+    var lidTopC     = [0.72, 0.53, 0.04, 1.0]; // dessus du couvercle doré 
 
     var palette = [corpsC, corpsC, corpsC, corpsC, seamC,
                    couvC,  couvC,  couvC,  couvC,  lidTopC];
@@ -47,6 +51,7 @@ function creerCouleursTresor(objgl) {
     return tabCouleursTresor;
 }
 
+// Initialise le trésor : trouve une position vide dans la matrice, crée les buffers de vertex et de couleurs, et ajoute le trésor à la scène
 function initTresor(objgl) {
     positionTresor = trouveCaseVide(matrice, 5);
     console.log("Position du trésor : " + positionTresor); 

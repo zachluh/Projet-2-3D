@@ -1,3 +1,8 @@
+/** --- Cubes.js ---
+ * Ce fichier contient la logique liée à la création et à la gestion des cubes (qui composent les murs et le sol) dans la scène 3D.
+ * @author Zachary Luheshi
+ */
+
 function creerCube(objgl) {
     var tabVertex = new Array();
 

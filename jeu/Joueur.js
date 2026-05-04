@@ -1,3 +1,8 @@
+/** --- Joueur.js ---
+ * Ce fichier contient la logique liée au joueur : initialisation, gestion des touches, collisions, etc.
+ * @author Ken-Li Roux, Zachary Luheshi
+ */
+
 // Initialisation du joueur : position, cible et orientation de la caméra, ainsi que les vitesses de déplacement et de rotation
 function initJoueur() {
         var joueur = creerCamera();

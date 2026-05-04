@@ -13,16 +13,59 @@ A:hover IMG { border-style:double; border-width:2px; border-color:Green;}
 
 #monCanvas { display: block; }
 
-#ecran-text {
+#ecran-press-start {
     position: absolute;
     top: 0;
     left: 0;
     width: 1080px;
     height: 720px;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background-color: red;
+    font-family: 'Press Start 2P', monospace;
+    color: black;
+    pointer-events: none;
+    box-sizing: border-box;
+    padding: 50px 80px 60px;
+}
+
+#ecran-controles {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    font-size: 14px;
+    text-align: left;
+    color: black;
+    margin-top : 4rem;
+}
+
+#ecran-controles p {
+    margin: 0;
+}
+
+#ecran-press-start-text {
+    flex: 3;
+    display: flex;
     align-items: center;
     justify-content: center;
-    background-color: red;
+    font-size: 18px;
+    color: black;
+    text-align: center;
+    line-height: 2;
+    padding: 0 60px;
+}
+
+#ecran-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1080px;
+    height: 720px;
+    display: none;
+    align-items: center;
+    justify-content: center;
     font-family: 'Press Start 2P', monospace;
     font-size: 18px;
     color: black;

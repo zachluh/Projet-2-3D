@@ -1,3 +1,10 @@
+/** --- Config.js --- 
+ * Ce fichier contient toutes les variables globales utilisés dans le jeu, ainsi que les fonctions d'initialisation de ces variables.
+ * @author Zachary Luheshi
+*/
+
+
+
 // --------------- INITALISATION DE TOUTE LES VARIABLES DU JEU ---------------
 
 // Variables globales
