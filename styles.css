@@ -64,6 +64,7 @@ A:hover IMG { border-style:double; border-width:2px; border-color:Green;}
     width: 1080px;
     height: 720px;
     display: none;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     font-family: 'Press Start 2P', monospace;
@@ -74,6 +75,12 @@ A:hover IMG { border-style:double; border-width:2px; border-color:Green;}
     padding: 0 60px;
     box-sizing: border-box;
     line-height: 2;
+}
+
+#ecran-flowey-end {
+    width: 280px;
+    margin-top: 24px;
+    image-rendering: pixelated;
 }
 
 #hud {
@@ -117,6 +124,97 @@ A:hover IMG { border-style:double; border-width:2px; border-color:Green;}
 
 #hud-murs {
     font-size: 13px;
+}
+
+#crosshair {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1080px;
+    height: 720px;
+    pointer-events: none;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes fade-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+#ecran-intro {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1080px;
+    height: 720px;
+    background-color: black;
+    display: none;
+}
+
+#ecran-flowey {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1080px;
+    height: 720px;
+    background-color: black;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+#flowey-sprite {
+    image-rendering: pixelated;
+    width: 100px;
+    background-color: black;
+    height: auto;
+}
+
+#ecran-dialogue {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 860px;
+    min-height: 100px;
+    border: 3px solid white;
+    box-sizing: border-box;
+    background-color:black;
+    padding: 20px 30px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 13px;
+    color: white;
+    line-height: 2;
+    text-align: left;
+}
+
+#dialogue-texte {
+    margin: 0;
+}
+#crosshair::before,
+#crosshair::after {
+    content: '';
+    position: absolute;
+    background: rgba(255, 255, 255, 0.85);
+    top: 50%;
+    left: 50%;
+}
+#crosshair::before {
+    width: 20px;
+    height: 2px;
+    transform: translate(-50%, -50%);
+}
+#crosshair::after {
+    width: 2px;
+    height: 20px;
+    transform: translate(-50%, -50%);
 }
 
 

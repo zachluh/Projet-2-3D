@@ -40,12 +40,27 @@ async function initTeleporteurs() {
         centeredPositions[i + 2] = positions[i + 2] - cz;
     }
 
+    // Normaliser les UV pour qu'elles couvrent exactement [0,1] (les UVs du GLTF dépassent cette plage, ce qui cause du tiling)
+    let minU = Infinity, maxU = -Infinity, minV = Infinity, maxV = -Infinity;
+    for (let i = 0; i < texCoords.length; i += 2) {
+        if (texCoords[i]     < minU) minU = texCoords[i];
+        if (texCoords[i]     > maxU) maxU = texCoords[i];
+        if (texCoords[i + 1] < minV) minV = texCoords[i + 1];
+        if (texCoords[i + 1] > maxV) maxV = texCoords[i + 1];
+    }
+    const rangeU = maxU - minU || 1, rangeV = maxV - minV || 1;
+    const normalizedTexCoords = new Float32Array(texCoords.length);
+    for (let i = 0; i < texCoords.length; i += 2) {
+        normalizedTexCoords[i]     = (texCoords[i]     - minU) / rangeU;
+        normalizedTexCoords[i + 1] = (texCoords[i + 1] - minV) / rangeV;
+    }
+
     let teleporteurs = [];
 
     for (let i = 0; i < (nbTransporteurs + nbRecepteurs); i++) {
         let teleporteur = new Object();
         teleporteur.positions = centeredPositions;
-        teleporteur.texCoords = texCoords;
+        teleporteur.texCoords = normalizedTexCoords;
         teleporteur.indices = indices;
         teleporteurs.push(teleporteur);
     }

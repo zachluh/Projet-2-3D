@@ -9,7 +9,15 @@ async function initScene3D(objgl) {
     var objScene3D = new Object();
     tabObjets3D = new Array(); // Vider le tableau des objets 3D avant de les réinitialiser
 
-    //Initaliser les cubes (plancher, murs, etc.)
+    
+    // Skybox 
+     
+    var texSkyHaut = chargerTexture(objgl, niveau < 6 ? '' : 'textures/skybox_haut_autre.png');
+    var texSkyCote = chargerTexture(objgl, niveau < 6 ? '' : 'textures/skybox_cote.png');
+    var skyboxObjets = creerSkybox(objgl, texSkyHaut, texSkyCote);
+    for (var s = 0; s < skyboxObjets.length; s++) tabObjets3D.push(skyboxObjets[s]);
+
+    // Initialiser les cubes texturés (plancher, murs, etc.)
     initCubes(objgl);
     
     // Initialiser le trésor
@@ -51,6 +59,7 @@ if (jeuActif) miseAJourPositionJoueur();
 verifierCollisionTresor();
 verifierCollisionTransporteur();
 animationTeleporteur();
+animerTresor();
 effacerCanevas(objgl);
 dessiner();
 }
@@ -84,13 +93,13 @@ function dessiner() {
         if (vueTopDown && obj.estSpecial && !touchesActives[67]) continue;
 
         // Distance render : Si un cube est trop loin du joueur, ne pas le dessiner (sauf en vue top-down où on veut tout voir)
-        if (!vueTopDown) {
+        if (!vueTopDown && !obj.estSkybox) {
             var dx = obj.gridX - joueurX;
             var dz = obj.gridZ - joueurZ;
             if (dx * dx + dz * dz > _DISTANCE_RENDER_MAX) continue;
         }
 
-        if (!vueTopDown) {
+        if (!vueTopDown && !obj.estSkybox) {
         // Si un cube est complètement derrière le joueur, ne pas le dessiner (sauf en vue top-down où on veut tout voir)
             var dirX = Math.sin(angleCamera);
             var dirZ = Math.cos(angleCamera);
@@ -113,7 +122,27 @@ function dessiner() {
         // Relier la matrice aux shaders
         objgl.uniformMatrix4fv(objProgShaders.matModeleVue, false, _matModeleVue);
 
-        if (estTexturee) {
+        if (obj.estTextureeArrays) {
+            // Cubes et skybox : texture sur drawArrays (6 faces max, contours ignorés)
+            objgl.enableVertexAttribArray(objProgShaders.posTexel);
+            objgl.disableVertexAttribArray(objProgShaders.couleurVertex);
+            objgl.activeTexture(objgl.TEXTURE0);
+            objgl.bindTexture(objgl.TEXTURE_2D, obj.texture);
+            objgl.uniform1i(objProgShaders.noTexture, 0);
+            objgl.uniform1f(objProgShaders.pcCouleurTexel, 1.0);
+            objgl.uniform1f(objProgShaders.inverserCouleurs, 0.0);
+            var nbFaces = Math.min(6, obj.vertex.length);
+            for (var j = 0; j < nbFaces; j++) {
+                objgl.bindBuffer(objgl.ARRAY_BUFFER, obj.vertex[j]);
+                objgl.vertexAttribPointer(objProgShaders.posVertex, 3, objgl.FLOAT, false, 0, 0);
+                objgl.bindBuffer(objgl.ARRAY_BUFFER, obj.uvCoords[j]);
+                objgl.vertexAttribPointer(objProgShaders.posTexel, 2, objgl.FLOAT, false, 0, 0);
+                objgl.drawArrays(obj.vertex[j].typeDessin, 0, obj.vertex[j].intNbVertex);
+            }
+            objgl.disableVertexAttribArray(objProgShaders.posTexel);
+            objgl.enableVertexAttribArray(objProgShaders.couleurVertex);
+            objgl.uniform1f(objProgShaders.pcCouleurTexel, 0.0);
+        } else if (estTexturee) {
             // Relier les vertex aux shaders
             objgl.bindBuffer(objgl.ARRAY_BUFFER, vertex);
             objgl.vertexAttribPointer(objProgShaders.posVertex, 3, objgl.FLOAT, false, 0, 0);
@@ -152,14 +181,13 @@ function dessiner() {
                     // Relier les vertex aux shaders
                     objgl.bindBuffer(objgl.ARRAY_BUFFER, vertex[j]);
                     objgl.vertexAttribPointer(objProgShaders.posVertex, 3, objgl.FLOAT, false, 0, 0);
-                    var intNbVertex = (objgl.getBufferParameter(objgl.ARRAY_BUFFER, objgl.BUFFER_SIZE) / 4) / 3;
 
                     // Relier les couleurs aux shaders
                     objgl.bindBuffer(objgl.ARRAY_BUFFER, couleurs[j]);
                     objgl.vertexAttribPointer(objProgShaders.couleurVertex, 4, objgl.FLOAT, false, 0, 0);
 
                     // Dessiner
-                    objgl.drawArrays(vertex[j].typeDessin, 0, intNbVertex);
+                    objgl.drawArrays(vertex[j].typeDessin, 0, vertex[j].intNbVertex);
                 }
         else { // Dessiner le maillage
             // Relier les vertex aux shaders

@@ -9,8 +9,8 @@ function initJoueur() {
         setPositionsCameraXYZ([15, 1, 15], joueur);
         setCiblesCameraXYZ([12, 1, 15], joueur);
         setOrientationsXYZ([0, 1, 0], joueur);
-        joueur.vitesse = 0.3;
-        joueur.vitesseRotation = 0.1; 
+        joueur.vitesse = niveau >= 6 ? 0.15 : 0.07; // Vitesse plus élevée à partir du niveau 6
+        joueur.vitesseRotation = 0.07; 
         return joueur;
     }
 
@@ -19,9 +19,21 @@ function enfoncerTouche(event) {
     if (!event) return;
     event.preventDefault();
 
-    // Lancer le jeu si on attend l'écran de démarrage
+    // Lancer l'intro si le jeu n'a pas encore commencé
+    // Le jeu commence lorsque l'intro de Flowey a terminé
     if (!jeuEnCours) {
-        demarrerJeu();
+        if (cutsceneActive) {
+            // Intro en cours : Entrée avance les répliques, toute autre touche est ignorée
+            if (event.keyCode === 13) afficherProchaineReplique(repliquesEnCours);
+        } else {
+            declencherCutscene(repliquesIntro, true);
+        }
+        return;
+    }
+
+    // Cutscène midgame en cours : Entrée avance les répliques, toute autre touche est ignorée
+    if (cutsceneActive) {
+        if (event.keyCode === 13) afficherProchaineReplique(repliquesEnCours);
         return;
     }
 
@@ -64,13 +76,10 @@ function enfoncerTouche(event) {
             var nextZ = Math.round(pos[1] + dirZ);
             if (utiliserOuvreur(nextX, nextZ)) {
                 matrice[nextX][nextZ] = 0;
-
-                var idx = nextX * matrice[0].length + nextZ;
-                var obj = objScene3D.tabObjets3D[idx];
+                var obj = cubesMatrice[nextX][nextZ];
+                obj.texture = texSol;
                 mat4.identity(obj.matModele);
                 mat4.translate(obj.matModele, [nextX, 0, nextZ]);
-
-                console.log("Mur devant ouvert en (" + nextX + ", " + nextZ + ")");
             }
         
     }
@@ -146,6 +155,7 @@ function verifierCollisionTresor() {
 // Met à jour la position du joueur en fonction des touches actives, en vérifiant les collisions avec les murs. Appelée à chaque frame
 function miseAJourPositionJoueur() {
     if (vueTopDown) return;
+    if (cutsceneActive) return;
 
     var vitesse = joueur.vitesse;
     var vitesseRotation = joueur.vitesseRotation;
