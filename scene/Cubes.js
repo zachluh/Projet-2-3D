@@ -107,7 +107,7 @@ function creerCouleurs(objgl, type) {
     var couleur = (type === 3) ? [1.0, 0.0, 0.0, 1.0] : [1.0, 1.0, 1.0, 1.0];
     var noir = [0.0, 0.0, 0.0, 1.0];
 
-    // Faces 0-5 : 6 sommets chacune ; contours 6-7 : 4 sommets ; arêtes 8 : 8 sommets
+    
     var vertexCounts = [6, 6, 6, 6, 6, 6, 4, 4, 8];
 
     var tabObjCouleursCube = new Array();
@@ -128,21 +128,31 @@ function initCubes(objgl) {
         cubesMatrice[i] = [];
         for (var j = 0; j < matrice[i].length; j++) {
             var objet3D = new Object();
+
+            // Trouver le type du cube
             var type = matrice[i][j];
+
+            // Créer les tampons de vertex et de couleurs pour le cube 
             objet3D.vertex            = creerCube(objgl);
             objet3D.couleurs           = creerCouleurs(objgl, type);
             objet3D.estTextureeArrays = false;
             objet3D.maillage          = null;
             objet3D.transformations   = creerTransformations();
+
+            // Positionner le cube sur le sol ou comme un mur selon le type
             var y = (type === 1 || type === 2) ? 1 : 0;
+
+            // Positionner le cube dans la scène en fonction de sa position dans la matrice
             setPositionsXYZ([i, y, j], objet3D.transformations);
+
+            // Initialiser la matrice de modèle à l'identité, puis appliquer la translation pour positionner le cube
             objet3D.matModele = mat4.create();
             mat4.identity(objet3D.matModele);
             mat4.translate(objet3D.matModele, getPositionsXYZ(objet3D.transformations));
             objet3D.gridX = i;
             objet3D.gridZ = j;
             cubesMatrice[i][j] = objet3D;
-            tabObjets3D.push(objet3D);
+            tabObjets3D.push(objet3D); 
         }
     }
 }
