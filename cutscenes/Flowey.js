@@ -33,7 +33,7 @@ const repliquesIntro = [
     { texte: "Ils sont bien au chaud dans mon labyrinthe!",               sprite: "cutscenes/images/flowey_malefique2.png",              son: "son_malefique",   duree_typewriter: 40,  duree_son: 2.0 },
     { texte: "Mais retournons donc à mon jeu...",                         sprite: "cutscenes/images/flowey_gentil-removebg-preview.png",  son: "son_gentil",   duree_typewriter: 40,  duree_son: 1.5 },
     { texte: "Tu veux revoir tes amis?",                                  sprite: "cutscenes/images/flowey_gentil-removebg-preview.png",  son: "son_gentil",   duree_typewriter: 40,  duree_son: 1.0 },
-    { texte: "Eh bien, je te donne 60 secondes pour les chercher",               sprite: "cutscenes/images/flowey_gentil-removebg-preview.png",  son: "son_gentil",   duree_typewriter: 40,  duree_son: 2.0 },
+    { texte: "Eh bien, je te donne 60 secondes pour les chercher.",               sprite: "cutscenes/images/flowey_gentil-removebg-preview.png",  son: "son_gentil",   duree_typewriter: 40,  duree_son: 2.0 },
     { texte: "Si tu arrives à trouver les âmes de tes amis, ils seront libres!", sprite: "cutscenes/images/flowey_gentil2-removebg-preview.png", son: "son_gentil", duree_typewriter: 40,  duree_son: 2.5 },
     { texte: "Mais si tu échoues...",                                     sprite: "cutscenes/images/flowey_malefique1.png",             son: "son_malefique", duree_typewriter: 60,  duree_son: 1.3 },
     { texte: "Eh bien, tes amis...",                                      sprite: "cutscenes/images/flowey_malefique2.png",             son: "son_malefique", duree_typewriter: 60,  duree_son: 1.2 },
