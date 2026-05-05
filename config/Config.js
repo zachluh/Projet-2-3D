@@ -27,8 +27,14 @@ var _DISTANCE_RENDER_MAX = 12 * 12;
 // Variables de la scène
 
 var tabObjets3D = new Array();
-var cubesMatrice = [];  // cubesMatrice[i][j] → objet3D du cube à la case (i,j)
-var texSol = null;      // texture du sol, utilisée quand un mur est ouvert
+var cubesMatrice = [];  // cubesMatrice[i][j] → objet3D du cube à la case (i,j)   
+var texSkyHaut = null;
+var texSkyCote = null;
+
+var couleurSol = [1.0, 1.0, 1.0, 1.0];
+var couleurMur = [1.0, 1.0, 1.0, 1.0];
+var couleurSolStart = [1.0, 1.0, 0.6, 1.0];
+var couleurFleches = [1.0, 1.0, 0.0, 1.0]
 
 // Variables du joueur
 
@@ -118,3 +124,8 @@ var cutsceneActive = false;
 var repliquesEnCours = null;
 
 var indexReplique = 0;
+
+
+// Variables de text
+
+var couleurTextAnnonce = '#fc1303';

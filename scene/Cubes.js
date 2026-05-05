@@ -100,11 +100,11 @@ function creerCube(objgl) {
         tabObjCube[i].intNbVertex = tabVertex[i].length / 3;
     }
 
-    return tabObjCube;
+    return tabObjCube; 
 }
 
 function creerCouleurs(objgl, type) {
-    var couleur = (type === 3) ? [1.0, 0.0, 0.0, 1.0] : [1.0, 1.0, 1.0, 1.0];
+    var couleur = (type === 3) ? couleurSolStart : couleurSol;
     var noir = [0.0, 0.0, 0.0, 1.0];
 
     

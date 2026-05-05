@@ -15,7 +15,7 @@ function creerSkybox(objgl, texHaut, texCote) {
     var objets = [];
 
     // Boîte 5 unités au-delà du dédale 31×31, du sol (Y=-2) au ciel (Y=50)
-    var xMin = -5,  xMax = 36;
+    var xMin = -5,  xMax = 36; 
     var zMin = -5,  zMax = 36;
     var yMin = -2,  yMax = 50;
 

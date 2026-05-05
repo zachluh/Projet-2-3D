@@ -49,7 +49,7 @@ function afficherNiveau(n) {
     el.style.animation = '';
     el.style.opacity = '1';
     el.style.backgroundColor = n < 2 ? 'black' : 'transparent';
-    el.style.color = '#fc1303';
+    el.style.color = couleurTextAnnonce;
     el.style.fontSize = '48px';
     document.getElementById('ecran-text-label').textContent = 'Niveau ' + n;
     el.style.display = 'flex';
@@ -71,7 +71,7 @@ function afficherTempsEcoule() {
     if (img) img.style.display = 'none';
     el.style.animation = '';
     el.style.backgroundColor = 'transparent';
-    el.style.color = '#fc1303';
+    el.style.color = couleurTextAnnonce;
     el.style.fontSize = '48px';
     document.getElementById('ecran-text-label').textContent = 'TEMPS ECOULE';
     el.style.display = 'flex';
@@ -88,7 +88,7 @@ function afficherDepeche() {
     if (img) img.style.display = 'none';
     el.style.display = 'flex';
     el.style.backgroundColor = 'transparent';
-    el.style.color = '#fc1303';
+    el.style.color = couleurTextAnnonce;
     el.style.fontSize = '48px';
     document.getElementById('ecran-text-label').textContent = 'DEPECHE TOI';
     el.style.animation = 'clignoter 0.6s step-start infinite';

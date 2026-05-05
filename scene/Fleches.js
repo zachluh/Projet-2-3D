@@ -54,7 +54,7 @@ function creerFleche(objgl, positionsArray, indicesArray) {
     const dataCouleurs = new Float32Array(nbVertices * 4);
 
     for (let i = 0; i < nbVertices; i++) {
-        dataCouleurs.set([1.0, 0.0, 0.0, 1.0], i * 4); // red arrow
+        dataCouleurs.set(couleurFleches, i * 4); // red arrow
     }
 
     objgl.bufferData(objgl.ARRAY_BUFFER, dataCouleurs, objgl.STATIC_DRAW);

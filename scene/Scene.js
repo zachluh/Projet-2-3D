@@ -12,8 +12,8 @@ async function initScene3D(objgl) {
     
     // Skybox 
      
-    var texSkyHaut = chargerTexture(objgl, niveau < 6 ? '' : 'textures/skybox_haut_autre.png');
-    var texSkyCote = chargerTexture(objgl, niveau < 6 ? '' : 'textures/skybox_cote.png');
+    if (!texSkyHaut) texSkyHaut = chargerTexture(objgl, 'textures/skybox_intro.jpg');
+    if (!texSkyCote) texSkyCote = chargerTexture(objgl, 'textures/skybox_intro.jpg');
     var skyboxObjets = creerSkybox(objgl, texSkyHaut, texSkyCote);
     for (var s = 0; s < skyboxObjets.length; s++) tabObjets3D.push(skyboxObjets[s]);
 

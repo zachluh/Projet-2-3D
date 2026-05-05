@@ -85,6 +85,10 @@ function recommencerNiveau() {
         return;
     }
 
+    if (niveau >= 6) {
+        dialogueFlash(dialoguesFlash.length - 1);
+    }
+
     afficherTempsEcoule();
 
     setTimeout(async function() {
@@ -128,6 +132,10 @@ function passerNiveauSuivant() {
 
     niveau++;
     mettreAJourHUD(secondesRestantes);
+
+    if (niveau >= 7) {
+        dialogueFlash('random');
+    }
 
     if (niveau > 10) {
         declencherVictoire();
@@ -207,9 +215,10 @@ function declencherVictoire() {
     jeuActif = false;
     timerActif = false;
     if (_soundtrackTimeout !== null) { clearTimeout(_soundtrackTimeout); _soundtrackTimeout = null; }
-    arreterSoundTrack();
     sonVictoire();
     afficherVictoire();
+    var eld = document.getElementById('ecran-dialogue');
+    if (eld) eld.style.display = 'none';
     console.log("=== VICTOIRE === Score final : " + score);
 }
 
