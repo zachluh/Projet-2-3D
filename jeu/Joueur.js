@@ -77,7 +77,6 @@ function enfoncerTouche(event) {
             if (utiliserOuvreur(nextX, nextZ)) {
                 matrice[nextX][nextZ] = 0;
                 var obj = cubesMatrice[nextX][nextZ];
-                obj.texture = texSol;
                 mat4.identity(obj.matModele);
                 mat4.translate(obj.matModele, [nextX, 0, nextZ]);
             }

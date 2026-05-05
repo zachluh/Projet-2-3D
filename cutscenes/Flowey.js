@@ -52,8 +52,17 @@ const repliquesMidGame = [
     {texte : "Eh bien, tu sais quoi?", sprite: "cutscenes/images/flowey_malefique1.png", son: "son_malefique", duree_typewriter: 40, duree_son: 0.9},
     {texte : "TU N'ES QU'UN INSECTE!", sprite: "cutscenes/images/flowey_malefique2.png", son: "son_malefique", duree_typewriter: 40, duree_son: 0.9},
     {texte : "ET TU N'AS MAINTENANT PLUS QUE 20 SECONDES POUR ME PROUVER LE CONTRAIRE!", sprite: "cutscenes/images/flowey_transforme2.png", son: "son_malefique", duree_typewriter: 40, duree_son: 2.9},
-    {texte : "BONNE CHANCE!!!!!!", sprite: "cutscenes/images/flowey_transforme2.png", son: "son_malefique", duree_typewriter: 40, duree_son: 0.4},
+    {texte : "BONNE CHANCE!!!!!!", sprite: "cutscenes/images/flowey_transforme2.png", son: "son_malefique", duree_typewriter: 40, duree_son: 0.6},
     {texte : "HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHA", sprite: ["cutscenes/images/flowey_transforme4.png", "cutscenes/images/flowey_transforme3.png"], son: "son_rire", duree_typewriter: 40, duree_son: 10.0},
+]
+
+const dialoguesFlash = [
+    {texte : "TU NE VAS JAMAIS Y ARRIVER!", sprite: "cutscenes/images/flowey_transforme4.png", son: "son_malefique", duree_typewriter: 40, duree_son: 1.1},
+    {texte : "ABANDONNE!", sprite: "cutscenes/images/flowey_transforme4.png", son: "son_malefique", duree_typewriter: 40, duree_son: 0.4},
+    {texte : "TU N'ES RIEN COMPARÉ À MOI!", sprite: "cutscenes/images/flowey_transforme4.png", son: "son_malefique", duree_typewriter: 40, duree_son: 1.1},
+    {texte : "ARRÊTE DE PERDRE TON TEMPS!", sprite: "cutscenes/images/flowey_transforme4.png", son: "son_malefique", duree_typewriter: 40, duree_son: 1.1},
+    {texte : "JE NE TE LAISSERAI PAS GAGNER!", sprite: "cutscenes/images/flowey_transforme4.png", son: "son_malefique", duree_typewriter: 40, duree_son: 1.2},
+    {texte : "HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHAHA", sprite: ["cutscenes/images/flowey_transforme4.png", "cutscenes/images/flowey_transforme3.png"], son: "son_rire", duree_typewriter: 40, duree_son: 2.5},   
 ]
 
 // Tape le texte dans #dialogue-texte caractère par caractère.
@@ -116,8 +125,9 @@ function declencherCutscene(repliques, avecFond) {
 }
 
 // Fonction appelée à chaque fois que le joueur appuie sur une touche pendant une cutscène pour faire avancer le dialogue
-function afficherProchaineReplique(repliques) {
+async function afficherProchaineReplique(repliques) {
     indexReplique++;
+    let elFloweySprite = document.getElementById('flowey-sprite');
 
     if (indexReplique >= repliques.length) {
         indexReplique = 0;
@@ -129,6 +139,8 @@ function afficherProchaineReplique(repliques) {
             cutsceneActive = false;
         } else if (repliques === repliquesMidGame) {
             // Fin de la cutscène midgame : reprendre le jeu avec 20 secondes
+            afficherNiveau(niveau);
+            sonNouveauNiveau();
             cutsceneActive = false;
             DUREE_NIVEAU = 20;
             tempsEffectifEcouleMs = 0;
@@ -146,11 +158,18 @@ function afficherProchaineReplique(repliques) {
 
     // Actions déclenchées à des répliques spécifiques du midgame
     if (repliques === repliquesMidGame) {
-        if (indexReplique === 1) {
+        if (indexReplique === 2) {
             joueur = initJoueur();
             angleCamera = -Math.PI / 2;
         }
         if (indexReplique === 4) {
+            texSkyHaut = chargerTexture(objgl, 'textures/skybox_haut.png');
+            texSkyCote = chargerTexture(objgl, 'textures/skybox_cote.png');
+            couleurSol = [1.0, 0.0, 0.0, 1.0];
+            couleurSolStart = [1.0, 0.0, 0.0, 1.0];
+            couleurFleches = [0.0, 0.0 , 0.0, 1.0];
+            couleurTextAnnonce = '#000000';
+            objScene3D = await initScene3D(objgl);
             jouerFloweyIntro();
         }
     }
@@ -162,7 +181,6 @@ function afficherProchaineReplique(repliques) {
     // Si le sprite de la réplique est un tableau, on l'anime en alternant les images du tableau à interval régulier
     // Sinon, on affiche simplement l'image
     if (Array.isArray(replique.sprite)) {
-        let elFloweySprite = document.getElementById('flowey-sprite');
         let indexSprite = 0;
         elFloweySprite.src = replique.sprite[0];
         _spriteInterval = setInterval(() => {
@@ -196,4 +214,26 @@ function fermerCutscene() {
     arreterSonGentil();
     arreterSonMalefique();
     arreterSonRire();
+}
+
+function dialogueFlash(param) {
+    var elDialogue = document.getElementById('ecran-dialogue');
+    elDialogue.style.display = 'flex';
+    if (param === 'random') {
+        indexReplique = Math.floor(Math.random() * (dialoguesFlash.length - 1));
+        typewriterEffect(dialoguesFlash[indexReplique].texte, dialoguesFlash[indexReplique].duree_typewriter);
+    }
+
+    if (typeof param === 'number') {
+        indexReplique = param;
+        typewriterEffect(dialoguesFlash[indexReplique].texte, dialoguesFlash[indexReplique].duree_typewriter);
+    }
+
+    if (dialoguesFlash[indexReplique].son === 'son_malefique') sonMalefique(dialoguesFlash[indexReplique].duree_son);
+    else if (dialoguesFlash[indexReplique].son === 'son_rire') sonRire(dialoguesFlash[indexReplique].duree_son);
+
+    setTimeout(() => {
+        elDialogue.style.display = 'none';
+    }, (dialoguesFlash[indexReplique].duree_son * 1000) + 1000);
+    
 }
