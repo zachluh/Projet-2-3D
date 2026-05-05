@@ -122,25 +122,7 @@ function creerCouleurs(objgl, type) {
     return tabObjCouleursCube;
 }
 
-// UV pour une face TRIANGLE_FAN à 6 sommets : centre(0.5,0.5), TR, TL, BL, BR, TR (fermeture)
-var _uvFaceCube = new Float32Array([
-    0.5, 0.5,
-    1.0, 0.0,
-    0.0, 0.0,
-    0.0, 1.0,
-    1.0, 1.0,
-    1.0, 0.0
-]);
-
-// Un seul tampon UV partagé entre les 6 faces (données identiques)
-function creerUVsCube(objgl) {
-    var uvBuffer = objgl.createBuffer();
-    objgl.bindBuffer(objgl.ARRAY_BUFFER, uvBuffer);
-    objgl.bufferData(objgl.ARRAY_BUFFER, _uvFaceCube, objgl.STATIC_DRAW);
-    return [uvBuffer, uvBuffer, uvBuffer, uvBuffer, uvBuffer, uvBuffer];
-}
-
-function initCubes(objgl, texCubes) {
+function initCubes(objgl) {
     cubesMatrice = []; // réinitialiser le tableau de référence
     for (var i = 0; i < matrice.length; i++) {
         cubesMatrice[i] = [];
@@ -149,7 +131,6 @@ function initCubes(objgl, texCubes) {
             var type = matrice[i][j];
             objet3D.vertex            = creerCube(objgl);
             objet3D.couleurs           = creerCouleurs(objgl, type);
-            objet3D.texture           = texCubes[type] || texCubes[0];
             objet3D.estTextureeArrays = false;
             objet3D.maillage          = null;
             objet3D.transformations   = creerTransformations();

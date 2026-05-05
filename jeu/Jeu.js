@@ -21,6 +21,7 @@ function demarrerJeu() {
     dernierTimestampJeu = Date.now();
     _derniereSecondeRestante = -1;
     _niveauEnRestart = false;
+    _soundtrackTimeout = setTimeout(soundTrack, 5000);
     mettreAJourHUD(DUREE_NIVEAU);
 }
 
@@ -51,7 +52,11 @@ function mettreAJourJeu() {
     if (tempsRestant !== _derniereSecondeRestante) {
         if (tempsRestant <= 10 && tempsRestant > 0 && _derniereSecondeRestante > 10) {
             afficherDepeche();
-            sonDepeche();
+            if (niveau < 6) {
+                if (_soundtrackTimeout !== null) { clearTimeout(_soundtrackTimeout); _soundtrackTimeout = null; }
+                arreterSoundTrack();
+                soundTrack(2);
+            }
         }
         _derniereSecondeRestante = tempsRestant;
         mettreAJourHUD(tempsRestant);
@@ -61,7 +66,6 @@ function mettreAJourJeu() {
     if (tempsRestant === 0) {
         timerActif = false;
         sonTempsEcoule();
-        arreterSonDepeche();
         recommencerNiveau();
     }
 }
@@ -72,6 +76,8 @@ function recommencerNiveau() {
     _niveauEnRestart = true;
     jeuActif = false;
     score -= 200;
+    if (_soundtrackTimeout !== null) { clearTimeout(_soundtrackTimeout); _soundtrackTimeout = null; }
+    arreterSoundTrack();
     mettreAJourHUD(0);
 
     if (score < 200) {
@@ -99,6 +105,7 @@ function recommencerNiveau() {
         _niveauEnRestart = false;
         timerActif = true;
         jeuActif = true;
+        _soundtrackTimeout = niveau < 6 ? setTimeout(() => soundTrack(1), 3000) : null;
         mettreAJourHUD(DUREE_NIVEAU);
         
         // La scène n'est pas réinitialisée car elle reste la même
@@ -111,8 +118,9 @@ function passerNiveauSuivant() {
     timerActif = false;
     jeuActif = false;
 
-    // Arrêter le son depeche s'il est en train de jouer, puis jouer le son de trésor trouvé
-    arreterSonDepeche();
+    // Jouer le son de trésor trouvé
+    if (_soundtrackTimeout !== null) { clearTimeout(_soundtrackTimeout); _soundtrackTimeout = null; }
+    arreterSoundTrack();
     sonTresorTrouve();
 
     var secondesRestantes = Math.max(0, DUREE_NIVEAU - Math.floor(tempsEffectifEcouleMs / 1000));
@@ -123,6 +131,7 @@ function passerNiveauSuivant() {
 
     if (niveau > 10) {
         declencherVictoire();
+        arreterFloweyTheme();
         return;
     }
 
@@ -133,16 +142,25 @@ function passerNiveauSuivant() {
         nbRecepteurs = nbRecepteursInitiaux(niveau);
         initMatrice();
         objScene3D = await initScene3D(objgl);
-        sonNouveauNiveau();
-        afficherNiveau(niveau);
-        joueur = initJoueur();
-        angleCamera = -Math.PI / 2;
-        tempsEffectifEcouleMs = 0;
-        dernierTimestampJeu = Date.now();
-        _derniereSecondeRestante = -1;
-        timerActif = true;
-        jeuActif = true;
-        mettreAJourHUD(DUREE_NIVEAU);
+
+        if (niveau === 6) {
+            // Cutscène midgame : bloquer le joueur et lancer le dialogue
+            cutsceneActive = true;
+            declencherCutscene(repliquesMidGame, false);
+        } else {
+            sonNouveauNiveau();
+            afficherNiveau(niveau);
+            joueur = initJoueur();
+            angleCamera = -Math.PI / 2;
+
+            tempsEffectifEcouleMs = 0;
+            dernierTimestampJeu = Date.now();
+            _derniereSecondeRestante = -1;
+            timerActif = true;
+            jeuActif = true;
+            _soundtrackTimeout = niveau < 6 ? setTimeout(() => soundTrack(1), 5000) : null;
+            mettreAJourHUD(DUREE_NIVEAU);
+        }
     }, 500);
 }
 
@@ -177,8 +195,9 @@ function desactiverVueAerienne() {
 function declencherGameOver() {
     jeuActif = false;
     timerActif = false;
+    if (_soundtrackTimeout !== null) { clearTimeout(_soundtrackTimeout); _soundtrackTimeout = null; }
+    arreterSoundTrack();
     sonGameOver();
-    arreterSonDepeche();
     afficherGameOver();
     console.log("=== GAME OVER === Score final : " + score);
 }
@@ -187,7 +206,8 @@ function declencherGameOver() {
 function declencherVictoire() {
     jeuActif = false;
     timerActif = false;
-    arreterSonDepeche();
+    if (_soundtrackTimeout !== null) { clearTimeout(_soundtrackTimeout); _soundtrackTimeout = null; }
+    arreterSoundTrack();
     sonVictoire();
     afficherVictoire();
     console.log("=== VICTOIRE === Score final : " + score);

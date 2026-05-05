@@ -9,24 +9,16 @@ async function initScene3D(objgl) {
     var objScene3D = new Object();
     tabObjets3D = new Array(); // Vider le tableau des objets 3D avant de les réinitialiser
 
-    // Charger les textures des cubes (une par type de case)
-    var texCubes = {};
-    texSol = chargerTexture(objgl, 'textures/sol.jpg');
-    texCubes[0] = texSol;
-    texCubes[1] = chargerTexture(objgl, 'textures/mur_ouvrable.jpg');
-    texCubes[2] = chargerTexture(objgl, 'textures/mur.jpg');
-    texCubes[3] = chargerTexture(objgl, 'textures/enclos.jpg');
-    texCubes[4] = texCubes[0]; texCubes[5] = texCubes[0];
-    texCubes[6] = texCubes[0]; texCubes[7] = texCubes[0];
-
-    // Skybox texturée (rendue en premier pour apparaître derrière tout le reste)
-    var texSkyHaut = chargerTexture(objgl, 'textures/skybox_haut.png');
-    var texSkyCote = chargerTexture(objgl, 'textures/skybox_cote.png');
+    
+    // Skybox 
+     
+    var texSkyHaut = chargerTexture(objgl, niveau < 6 ? '' : 'textures/skybox_haut_autre.png');
+    var texSkyCote = chargerTexture(objgl, niveau < 6 ? '' : 'textures/skybox_cote.png');
     var skyboxObjets = creerSkybox(objgl, texSkyHaut, texSkyCote);
     for (var s = 0; s < skyboxObjets.length; s++) tabObjets3D.push(skyboxObjets[s]);
 
     // Initialiser les cubes texturés (plancher, murs, etc.)
-    initCubes(objgl, texCubes);
+    initCubes(objgl);
     
     // Initialiser le trésor
     initTresor(objgl);

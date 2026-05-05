@@ -18,7 +18,9 @@ function afficherGameOver() {
     el.style.backgroundColor = 'red';
     el.style.color = 'black';
     el.style.fontSize = '32px';
-    el.textContent = 'GAME OVER';
+    document.getElementById('ecran-text-label').textContent = 'GAME OVER';
+    var img = document.getElementById('ecran-flowey-end');
+    if (img) { img.src = 'cutscenes/images/flowey_gameover.png'; img.style.display = 'block'; }
     el.style.display = 'flex';
 }
 
@@ -28,27 +30,36 @@ function afficherVictoire() {
     if (!el) return;
     el.style.animation = '';
     el.style.fontSize = '32px';
-    el.textContent = 'VICTOIRE!!!';
+    document.getElementById('ecran-text-label').textContent = 'VICTOIRE!!!';
     el.style.backgroundColor = 'green';
     el.style.color = 'white';
+    var img = document.getElementById('ecran-flowey-end');
+    if (img) { img.src = 'cutscenes/images/flowey_victoire.png'; img.style.display = 'block'; }
     el.style.display = 'flex';
 }
 
 
 // Affiche le numéro du niveau au début de chaque niveau
+//Inclue un écran noir sur le premier niveau pour transitionner depuis l'intro de Flowey
 function afficherNiveau(n) {
     var el = document.getElementById('ecran-text');
     if (!el) return;
-    el.style.display = 'flex';
+    var img = document.getElementById('ecran-flowey-end');
+    if (img) img.style.display = 'none';
     el.style.animation = '';
-    el.style.backgroundColor = 'transparent';
+    el.style.opacity = '1';
+    el.style.backgroundColor = n < 2 ? 'black' : 'transparent';
     el.style.color = '#fc1303';
     el.style.fontSize = '48px';
-    el.textContent = 'Niveau ' + n;
+    document.getElementById('ecran-text-label').textContent = 'Niveau ' + n;
     el.style.display = 'flex';
     setTimeout(function() {
-        el.style.display = 'none';  
-    }, 2000);
+        el.style.animation = 'fade-out 1s ease forwards';
+        setTimeout(function() {
+            el.style.display = 'none';
+            el.style.animation = '';
+        }, 1000);
+    }, 3000);
 }
 
 
@@ -56,11 +67,13 @@ function afficherNiveau(n) {
 function afficherTempsEcoule() {
     var el = document.getElementById('ecran-text');
     if (!el) return;
+    var img = document.getElementById('ecran-flowey-end');
+    if (img) img.style.display = 'none';
     el.style.animation = '';
     el.style.backgroundColor = 'transparent';
     el.style.color = '#fc1303';
     el.style.fontSize = '48px';
-    el.textContent = 'TEMPS ECOULE';
+    document.getElementById('ecran-text-label').textContent = 'TEMPS ECOULE';
     el.style.display = 'flex';
     setTimeout(function() {
         el.style.display = 'none';
@@ -71,13 +84,14 @@ function afficherTempsEcoule() {
 function afficherDepeche() {
     var el = document.getElementById('ecran-text');
     if (!el) return;
+    var img = document.getElementById('ecran-flowey-end');
+    if (img) img.style.display = 'none';
     el.style.display = 'flex';
     el.style.backgroundColor = 'transparent';
     el.style.color = '#fc1303';
     el.style.fontSize = '48px';
-    el.textContent = 'DEPECHE TOI';
+    document.getElementById('ecran-text-label').textContent = 'DEPECHE TOI';
     el.style.animation = 'clignoter 0.6s step-start infinite';
-    el.style.display = 'flex';
 }
 
 // Met à jour les éléments du HUD (niveau, timer, score, murs restants) en fonction de l'état actuel du jeu

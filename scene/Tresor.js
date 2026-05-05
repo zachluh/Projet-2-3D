@@ -1,5 +1,6 @@
 /** --- Tresor.js ---
  * Ce fichier contient la logique liée à la création et à la gestion du trésor dans la scène 3D.
+ * (Lorsque Flowey parles des "âmes" dans l'intro, il veut vraiment dire le "Trésor" du projet)
  * @author Ken-Li Roux
  */
 

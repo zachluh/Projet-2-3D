@@ -60,6 +60,7 @@ var tempsEffectifEcouleMs = 0;
 var dernierTimestampJeu = 0;
 var _derniereSecondeRestante = -1;
 var _niveauEnRestart = false;
+var _soundtrackTimeout = null;
 
 function nbOuvreursInitiaux(n) {
     return Math.max(0, 4 - Math.floor((n - 1) / 2));
@@ -101,6 +102,19 @@ var fichiersSons = {
     gameOver:      'sfx/game_over.mp3',
     victoire:      'sfx/victoire.mp3',
     depeche:       'sfx/depeche.mp3',
+    son_gentil:    'sfx/son_gentil.mp3',
+    son_malefique: 'sfx/son_malefique.mp3',
+    son_rire:      'sfx/son_rire.mp3',
+    main_soundtrack : 'sfx/soundtrack.mp3',
+    flowey_intro:  'sfx/flowey_intro.mp3',
+    flowey_maintheme: 'sfx/flowey_maintheme.mp3'
 };
 
 var sourcesActives = {};
+
+// Variables de Flowey
+
+var cutsceneActive = false;
+var repliquesEnCours = null;
+
+var indexReplique = 0;

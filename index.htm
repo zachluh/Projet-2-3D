@@ -24,6 +24,7 @@
   <script type="text/javascript" src="jeu/Joueur.js"></script>
   <script type="text/javascript" src="scene/Tresor.js"></script>
   <script type="text/javascript" src="jeu/Jeu.js"></script>
+  <script type="text/javascript" src="cutscenes/Flowey.js"></script>
   <script type="text/javascript" src="scene/Cubes.js"></script>
   <script type="module" src="scene/Fleches.js"></script>
   <script type="module" src="scene/Teleporteurs.js"></script>
@@ -82,11 +83,23 @@
 	            <p>PageUp : Mode aérien</p>
 	            <p>C : Voir objets en mode aérien</p>
 	            <p>PageDown : Mode déplacement</p>
+                <p>Enter : Progresser le dialog</p>
 	        </div>
 	        <div id="ecran-press-start-text">Pesez une touche pour commencer</div>
 	    </div>
-	    <div id="crosshair"></div>
-	    <div id="ecran-text"></div>
+	    <div id="ecran-text">
+        <span id="ecran-text-label"></span>
+        <img id="ecran-flowey-end" src="" alt="" style="display:none;" />
+    </div>
+
+	    <div id="ecran-flowey">
+	        <img id="flowey-sprite" src="images/flowey_gentil1.png" alt="Flowey" />
+	    </div>
+
+	    <div id="ecran-dialogue">
+	        <p id="dialogue-texte"></p>
+	    </div>
+
 	    <div id="hud">
 	        <span id="hud-niveau">Niveau 1</span>
 	        <span id="hud-timer">60s</span>
