@@ -38,7 +38,7 @@ function enfoncerTouche(event) {
     }
 
     // Page Up — entrer en vue de dessus
-    if (event.keyCode === 33 || event.keyCode === 187) {
+    if (event.keyCode === 33 || event.keyCode === 219) {
         if (!vueTopDown) {
             if (!activerVueAerienne()) return; // score < 10, vue aérienne refusée
             vueTopDown = true;
@@ -52,7 +52,7 @@ function enfoncerTouche(event) {
     }
 
     // Page Down — quitter la vue de dessus
-    if (event.keyCode === 34 || event.keyCode === 189) {
+    if (event.keyCode === 34 || event.keyCode === 221) {
         if (vueTopDown) {
             vueTopDown = false;
             desactiverVueAerienne();
